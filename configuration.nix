@@ -4,23 +4,41 @@
   imports =
     [
       <nixos-hardware/apple/macbook-air/6>
+      <musnix>
       ./hardware-configuration.nix
-      ./x.nix
     ];
+
+  musnix.enable = true;
+  musnix.kernel.optimize = true;
+  musnix.kernel.realtime = true;
+  musnix.kernel.packages = pkgs.linuxPackages_latest_rt;
+  musnix.kernel.latencytop = true;
+  musnix.alsaSeq.enable = true;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelParams = [ "acpi_osi=! acpi_osi=\"Windows 2009\""];
+  boot.kernelModules = ["kvm-intel" "vboxdrv"];
+
+  hardware.opengl.enable = true;
+  hardware.opengl.extraPackages = with pkgs; [
+    libGL_driver
+  ];
+
+  hardware.opengl.driSupport32Bit = true;
+  hardware.opengl.extraPackages32 = with pkgs.pkgsi686Linux; [ libva ];
+  hardware.pulseaudio.support32Bit = true;
 
   boot.cleanTmpDir = true;
 
   powerManagement.enable = true;
-  powerManagement.cpuFreqGovernor = "powersave";
+  powerManagement.cpuFreqGovernor = "perfomance";
 
   services.acpid.enable = true;
-
   hardware.acpilight.enable = true;
+
+  hardware.bluetooth.enable = true;
 
   networking.hostName = "absu";
   networking.networkmanager.enable = true;
@@ -32,8 +50,12 @@
       config = '' config /root/.vpn/devim/client.ovpn '';
       autoStart = false;
     };
-    expressvpn = {
-      config = '' config /root/.vpn/expressvpn/my_expressvpn_netherlands_-_rotterdam_udp.ovpn '';
+    expressvpn-europe = {
+      config = '' config /root/.vpn/expressvpn-europe/my_expressvpn_netherlands_-_rotterdam_udp.ovpn '';
+      autoStart = false;
+    };
+    expressvpn-usa = {
+      config = '' config /root/.vpn/expressvpn-usa/expressvpn-usa.ovpn '';
       autoStart = false;
     };
   };
@@ -53,6 +75,8 @@
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [
+    vim
+    busybox
     killall
     zsh
     curl
@@ -75,38 +99,73 @@
     tree
     feh
     alacritty
-    dmenu
+    plasma5.sddm-kcm
+    rofi
+    rofi-pass
     mpv
-    xmobar
-    stalonetray
-    kbdlight
-    libnotify
-    dunst
+    texlive.combined.scheme-full
     go
     goimports
     godef
+    gotests
     golangci-lint
+    clojure
+    clojure-lsp
+    leiningen
     kubectl
+    kustomize
     skaffold
     tdesktop
     tldr
     openvpn
     postman
-    influxdb
     xbanish
     dropbox
-    pywal
     firefox
+    chromium
+    rtorrent
+    dosbox
+    dbeaver
+    krita
+    bitwig-studio
+    qjackctl
+    patchage
+    minikube
+    pywal
+    docker-compose
+    godot
+    discord
+    torbrowser
+    plantuml
+    imagemagick
+    (python37.withPackages(ps: with ps; [ pip python-language-server flake8 pytest numpy jupyter tensorflow tensorflow-tensorboard Keras ]))
+    renpy
   ];
 
   fonts.fonts = with pkgs; [
     corefonts
+    symbola
+    monoid
+    iosevka
   ];
 
   networking.firewall.enable = true;
 
   sound.enable = true;
   hardware.pulseaudio.enable = true;
+  hardware.pulseaudio.package = pkgs.pulseaudioFull;
+
+  services.jack = {
+    jackd.enable = true;
+    alsa.enable = false;
+    loopback = {
+      enable = true;
+      # buffering parameters for dmix device to work with ALSA only semi-professional sound programs
+      #dmixConfig = ''
+      #  period_size 2048
+      #'';
+    };
+  };
 
   services.dnsmasq.enable = true;
   services.dnsmasq.servers = ["8.8.8.8" "8.8.4.4"];
@@ -130,8 +189,8 @@
 
   programs.gnupg.agent = { enable = true; enableSSHSupport = true; }; 
 
-  services.emacs.enable = true;
-  services.emacs.defaultEditor = true;
+  services.emacs.enable = false;
+  services.emacs.defaultEditor = false;
   services.emacs.install = true;
   services.emacs.package = with pkgs; (emacsWithPackages (with emacsPackagesNg; [
     base16-theme
@@ -151,7 +210,6 @@
     yasnippet
     yasnippet-snippets
     multi-term
-    golden-ratio
     diff-hl
     magit
     evil-magit
@@ -162,7 +220,10 @@
     origami
     company
     company-lsp
+    company-quickhelp
+    helm-company
     lsp-mode
+    clojure-lsp
     projectile
     helm-projectile
     go-mode
@@ -170,6 +231,8 @@
     go-impl
     protobuf-mode
     slime
+    slime-company
+    slime-repl-ansi-color
     geiser
     racket-mode
     cider
@@ -178,11 +241,15 @@
     org
     evil-org
     org-bullets
-    kubernetes
-    kubernetes-evil
     yaml-mode
-    nix-mode
-    company-nixos-options
+    ewal
+    which-key
+    flycheck
+    flycheck-status-emoji
+    flycheck-inline
+    flycheck-golangci-lint
+    renpy
+    eimp
   ]));
 
   services.xserver.enable = true;
@@ -192,58 +259,34 @@
   services.xserver.libinput.enable = true;
   services.xserver.libinput.disableWhileTyping = true;
 
-  services.compton = {
-    enable = true;
-    fade = true;
-    #inactiveOpacity = "0.9";
-    #shadow = true;
-    fadeDelta = 4;
-  };
+  # services.xserver.videoDrivers = ["intel"];
+  services.xserver.videoDrivers = ["mesa"];
 
   services.xserver.displayManager.sddm.enable = true;
 
   services.xserver.desktopManager.xterm.enable = false;
-  # services.xserver.desktopManager.plasma5.enable = true; 
+
+  services.xserver.desktopManager.plasma5.enable = true;
+
+  users.extraGroups.vboxusers.members = [ "xdefrag" ];
   
-  services.xserver.windowManager.xmonad.enable = true;
-  services.xserver.windowManager.xmonad.enableContribAndExtras = true;
-  services.xserver.windowManager.xmonad.config =
-    ''
-     import XMonad
-     import XMonad.Actions.SpawnOn
-     import XMonad.Config.Desktop
-     import XMonad.Hooks.DynamicLog
-     import qualified XMonad.StackSet as W -- to shift and float windows
-
-     baseConfig = desktopConfig
-
-     main = xmonad =<< xmobar baseConfig
-            { terminal    = "alacritty"
-            , modMask     = mod4Mask
-	    , manageHook  = manageHook baseConfig <+> myManageHook
-            }
-
-     myManageHook = composeAll . concat $
-         [ [ className   =? c --> doFloat           | c <- myFloats]
-         , [ title       =? t --> doFloat           | t <- myOtherFloats]
-	 , [ className   =? c --> doF (W.shift "2") | c <- webApps]
-	 , [ className   =? c --> doF (W.shift "3") | c <- ircApps]
-	 ]
-       where myFloats      = ["MPlayer", "Gimp"]
-             myOtherFloats = ["alsamixer"]
-             webApps       = ["Firefox-bin", "Opera"] -- open on desktop 2
-             ircApps       = ["Ksirc"]                -- open on desktop 3
-    '';
-
   users.defaultUserShell = pkgs.zsh;
   users.users.xdefrag = {
     isNormalUser = true;
-    extraGroups = ["wheel" "networkmanager" "docker"];
+    extraGroups = ["wheel" "networkmanager" "docker" "jackaudio" "audio"];
     uid = 1000;
     shell = pkgs.zsh;
   };
 
   security.sudo.wheelNeedsPassword = false;
+
+  services.nixosManual.showManual = true;
+
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
 
   system.stateVersion = "19.09";
 }

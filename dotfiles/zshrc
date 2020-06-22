@@ -1,5 +1,8 @@
-export PATH=$PATH:~/go/bin:~/bin
+export PATH=$PATH:~/go/bin
+export WINEARCH=win32
+export EDITOR=vim
 
+alias v=vim
 alias e=emacsclient
 alias k=kubectl
 alias kgp=kubectl get pods

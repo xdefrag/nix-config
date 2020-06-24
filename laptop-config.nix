@@ -16,6 +16,7 @@
       ./emacs.nix
       ./x.nix
       ./desktop.nix
-      ./dotfiles.nix
     ];
+
+  hardware.facetimehd.enable = true;
 }

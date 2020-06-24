@@ -3,29 +3,48 @@
 {
   home.sessionVariables = {};
 
+  home.keyboard = {
+    layout = "us,ru";
+    options = [
+      "grp:ctrl_shift_toggle"
+      "ctrl:swapcaps"
+    ];
+  };
+
   home.packages = with pkgs; [
     autojump
     bitwig-studio
-    dmenu
+    blueman
     dropbox
     firefox
+    ghcid
+    gnome3.networkmanagerapplet
+    i3lock
+    imagemagick
+    pa_applet
+    pcmanfm
     plantuml
+    python-language-server
     pywal
     rofi-pass
+    scrot
+    spotify
     tdesktop
     tldr
-    xlockmore
-    # (python37.withPackages(ps: with ps; [
-    #   Keras
-    #   flake8
-    #   jupyter
-    #   numpy
-    #   pip
-    #   pytest
-    #   python-language-server
-    #   tensorflow
-    #   tensorflow-tensorboard
-    # ]))
+    trayer
+    xfce.xfce4-power-manager
+    xmobar
+    youtube-dl
+    (python37.withPackages(ps: with ps; [
+      Keras
+      flake8
+      jupyter
+      numpy
+      pip
+      pytest
+      tensorflow
+      tensorflow-tensorboard
+    ]))
   ];
 
   news.display = "silent";
@@ -40,7 +59,7 @@
           normal = {
             family = "Iosevka";
           };
-          size = 14.0;
+          size = 12.0;
         };
       };
     };
@@ -107,32 +126,26 @@
       enable = true;
       blur = true;
       fade = true;
-      fadeDelta = 10;
+      fadeDelta = 5;
       shadow = false;
       vSync = true;
     };
-    screen-locker = {
-      enable = true;
-      inactiveInterval = 5;
-      lockCmd = "i3lock";
-    };
-    spotifyd = {
-      enable = true;
-      settings = {
-        global = {
-          user = "me@xdefrag.dev";
-          password_cmd = "pass spotify-usa";
-          device_name = "nix";
-          bitrate = "320";
-        };
-      };
-    };
-    stalonetray.enable = true;
-    taffybar.enable = true;
   };
 
   xsession = {
     enable = true;
+    initExtra =
+      ''
+      wal -R &
+      trayer --edge top --align right --SetDockType true --SetPartialStrut true \
+             --expand true --width 15 --transparent true --alpha 0 --tint 0x283339 --height 20\
+             --monitor 1 &
+      nm-applet &
+      xfce4-power-manager &
+      blueman-applet &
+      dropbox &
+      pa-applet &
+      '';
     windowManager.xmonad = {
       enable = true;
       enableContribAndExtras = true;
@@ -140,9 +153,22 @@
   };
 
   home.file = {
-    ".emacs".text = ''
-                    (package-initialize)
-                    (org-babel-load-file "~/Dropbox/org/emacs-cfg.org")
-                    '';
+    ".emacs".text =
+      ''
+      (package-initialize)
+      (org-babel-load-file "~/Dropbox/org/emacs-cfg.org")
+      '';
+    ".xmonad/xmonad.hs".source = ./dotfiles/xmonad.hs;
+    ".xmobarrc".source = ./dotfiles/xmobarrc;
+  };
+
+  xdg.configFile = {
+    "dunst/dunstrc".source = ./dotfiles/dunstrc;
+    "rofi/config.rasi".text =
+      ''
+      configuration {
+        theme: "~/.cache/wal/colors-rofi-light";
+      }
+      '';
   };
 }

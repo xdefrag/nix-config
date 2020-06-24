@@ -48,9 +48,11 @@
 
   hardware.pulseaudio.enable = true;
   hardware.pulseaudio.package = pkgs.pulseaudioFull;
+  hardware.bluetooth.enable = true;
 
   services.dnsmasq.enable = true;
   services.dnsmasq.servers = ["8.8.8.8" "8.8.4.4"];
+  services.blueman.enable = true;
 
   programs.zsh.enable = true;
   programs.zsh.ohMyZsh.enable = true;

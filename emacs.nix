@@ -6,57 +6,59 @@
   services.emacs.install = true;
   services.emacs.package = with pkgs; (emacsWithPackages (with emacsPackagesNg; [
     base16-theme
-    use-package
-    use-package-chords
-    general
     benchmark-init
-    minions
-    exec-path-from-shell
+    cider
+    clojure-lsp
+    company
+    company-ghci
+    diff-hl
+    dired-hide-dotfiles
     evil
     evil-collection
-    evil-surround
     evil-commentary
-    dired-hide-dotfiles
-    helm
-    helm-rg
-    yasnippet
-    yasnippet-snippets
-    multi-term
-    diff-hl
-    magit
     evil-magit
-    magit-todos
-    paredit
-    parinfer
-    rainbow-delimiters
-    origami
-    company
-    helm-company
-    lsp-mode
-    clojure-lsp
-    projectile
-    helm-projectile
-    go-mode
+    evil-org
+    evil-surround
+    ewal
+    exec-path-from-shell
+    flycheck
+    flycheck-golangci-lint
+    flycheck-inline
+    flycheck-status-emoji
+    geiser
+    general
     go-gen-test
     go-impl
+    go-mode
+    helm
+    helm-company
+    helm-projectile
+    helm-rg
+    lsp-mode
+    lsp-python-ms
+    magit
+    magit-todos
+    minions
+    multi-term
+    ob-async
+    ob-http
+    org
+    org-bullets
+    origami
+    paredit
+    parinfer
+    projectile
     protobuf-mode
+    racket-mode
+    rainbow-delimiters
     slime
     slime-company
     slime-repl-ansi-color
-    geiser
-    racket-mode
-    cider
-    ob-http
-    ob-async
-    org
-    evil-org
-    org-bullets
-    yaml-mode
-    ewal
+    use-package
+    use-package-chords
     which-key
-    flycheck
-    flycheck-status-emoji
-    flycheck-inline
-    flycheck-golangci-lint
+    yaml-mode
+    yasnippet
+    yasnippet-snippets
   ]));
 }

@@ -12,6 +12,8 @@
   };
 
   home.packages = with pkgs; [
+    nixfmt
+    lutris
     autojump
     bitwig-studio
     blueman

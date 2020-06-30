@@ -48,6 +48,7 @@
 
   hardware.pulseaudio.enable = true;
   hardware.pulseaudio.package = pkgs.pulseaudioFull;
+
   hardware.bluetooth.enable = true;
 
   services.dnsmasq.enable = true;

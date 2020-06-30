@@ -13,11 +13,12 @@
     <nixos-hardware/apple/macbook-air/6>
     ./minimum.nix
     ./emacs.nix
-    ./x.nix
     ./desktop.nix
   ];
 
   hardware.facetimehd.enable = true;
+  hardware.opengl.enable = true;
+  hardware.opengl.driSupport = true;
 
   boot.kernelModules = [
     "coretemp" "applesmc" "intel_pstate=disable" ];
@@ -34,8 +35,8 @@
 
   services.mbpfan = {
     enable = true;
-    lowTemp = 56;
-    highTemp = 66;
+    lowTemp = 55;
+    highTemp = 60;
     maxTemp = 80;
     maxFanSpeed = 6500;
     minFanSpeed = 1200;

@@ -1,7 +1,9 @@
 { lib, pkgs, cfg, ... }:
 
 {
-  home.sessionVariables = { };
+  home.sessionVariables = {
+    EDITOR = "vim";
+  };
 
   home.keyboard = {
     layout = "us,ru";
@@ -14,7 +16,7 @@
     enable = true;
     config = {
       bars = [{ command = "waybar"; }];
-      fonts = [ "Iosevka Term 10" ];
+      fonts = [ "Iosevka 10" ];
       keybindings = let mod = cfg.config.modifier; in lib.mkOptionDefault { };
       menu = "${pkgs.rofi}/bin/rofi -show run";
       modifier = "Mod4";
@@ -52,35 +54,31 @@
   };
 
   home.packages = with pkgs; [
-    qutebrowser
-    noto-fonts
-    noto-fonts-extra
-    noto-fonts-emoji
-    noto-fonts-cjk
-    fff
     act
     autojump
     bitwig-studio
     blueman
     cantarell-fonts
-    clojure
-    clojure-lsp
     corefonts
     dropbox
+    fff
     font-awesome
-    ghcid
     gopls
     imagemagick
     iosevka
-    leiningen
     lutris
     mako
     nixfmt
     nixos-icons
+    noto-fonts
+    noto-fonts-cjk
+    noto-fonts-emoji
+    noto-fonts-extra
     plantuml
-    python-language-server
     pywal
+    qutebrowser
     rofi-pass
+    rtv
     scrot
     spotify
     sway-contrib.grimshot
@@ -89,6 +87,7 @@
     swaylock
     tdesktop
     tldr
+    universal-ctags
     waybar
     youtube-dl
     (python37.withPackages (ps:
@@ -141,7 +140,7 @@
     mpv.enable = true;
     rofi = {
       enable = true;
-      font = "Iosevka Term 10";
+      font = "Iosevka 10";
     };
     rtorrent.enable = true;
     ssh.enable = true;
@@ -162,7 +161,6 @@
       enableAutosuggestions = true;
       enableCompletion = true;
       autocd = true;
-      defaultKeymap = "emacs";
       oh-my-zsh = {
         enable = true;
         plugins = [
@@ -179,7 +177,6 @@
       };
       shellAliases = {
         v = "vim";
-        e = "emacsclient";
         k = "kubectl";
         p = "pass";
         r = "ranger";
@@ -190,17 +187,31 @@
         s = "systemctl --user";
       };
     };
+    vim = {
+      enable = true;
+      extraConfig = builtins.readFile ./dotfiles/vimrc;
+      plugins = with pkgs.vimPlugins; [
+        auto-pairs
+        fzf-vim
+        supertab
+        tagbar
+        vim-commentary
+        vim-dispatch
+        vim-eunuch
+        vim-gitgutter
+        vim-polyglot
+        vim-repeat
+        vim-surround
+        vim-unimpaired
+        wal-vim
+        vim-snippets
+        vim-snipmate
+      ];
+    };
   };
 
   services = {
     gpg-agent.enable = true;
-  };
-
-  home.file = {
-    ".emacs".text = ''
-      (package-initialize)
-      (org-babel-load-file "~/Dropbox/org/emacs-cfg.org")
-    '';
   };
 
   xdg = {
@@ -210,17 +221,12 @@
         theme: "~/.cache/wal/colors-rofi-light";
         }
         '';
+        "rtorrent/rtorrent.rc".source = ./dotfiles/rtorrent.rc;
         "waybar/config".source = ./dotfiles/waybar;
         "waybar/style.css".source = ./dotfiles/style.css;
-        "mako/config".text =
-          ''font=Iosevka Term 10
-background-color=#323232
-text-color=#FFFFFF
-border-size=0
-default-timeout=2000'';
+        "mako/config".source = ./dotfiles/mako;
         "qutebrowser/config.py".source = ./dotfiles/qutebrowser.py;
         "qutebrowser/qutewal.py".source = ./dotfiles/qutewal.py;
     };
-
   };
 }

@@ -24,7 +24,6 @@
   environment.systemPackages = with pkgs; [
     brightnessctl
     gotop
-    vim
     zsh
     curl
     ripgrep

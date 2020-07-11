@@ -1,0 +1,72 @@
+colorscheme wal
+
+filetype plugin on
+filetype indent on
+
+set nocompatible
+set nobackup
+set nowritebackup
+set noswapfile
+
+set mouse=
+set ttymouse=sgr
+set updatetime=500
+set balloondelay=250
+set signcolumn=yes
+
+set clipboard=unnamed
+
+set nocursorline
+set showmatch
+set noruler
+" set list
+
+set noerrorbells
+set novisualbell
+set t_vb=
+set lazyredraw
+
+set incsearch
+set hlsearch
+set ignorecase
+
+set path+=**
+set wildmenu
+set wildignore+=*/node_modules/*,*/vendor/*
+
+set foldenable
+set foldlevelstart=10
+set foldnestmax=20
+set foldmethod=indent
+
+let g:netrw_banner = 0
+let g:netrw_keepdir = 0
+let g:netrw_liststyle = 1
+let g:netrw_sort_options = 'i'
+
+set autoindent
+set smartindent
+
+set backspace=2
+
+if has("patch-8.1.1904")
+  set completeopt+=popup
+  set completepopup=align:menu,border:off,highlight:Pmenu
+endif
+
+inoremap jk <Esc>
+nnoremap j gj
+nnoremap k gk
+nnoremap ; :
+vnoremap ; :
+nnoremap L $
+nnoremap H ^
+
+noremap <Up> <nop>
+noremap <Down> <nop>
+noremap <Left> <nop>
+noremap <Right> <nop>
+inoremap <Up> <nop>
+inoremap <Down> <nop>
+inoremap <Left> <nop>
+inoremap <Right> <nop>

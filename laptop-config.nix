@@ -12,8 +12,10 @@
     ./hardware-configuration.nix
     <nixos-hardware/apple/macbook-air/6>
     ./minimum.nix
+    ./docker.nix
     ./emacs.nix
     ./desktop.nix
+    ./vpn.nix
   ];
 
   hardware.facetimehd.enable = true;

@@ -24,7 +24,10 @@
         titlebar = false;
       };
       workspaceAutoBackAndForth = true;
-      startup = [{ command = "mako"; }];
+      startup = [
+        { command = "mako"; }
+        { command = "dropbox"; }
+      ];
     };
     extraConfig = ''
       include "$HOME/.cache/wal/colors-sway"
@@ -49,33 +52,44 @@
   };
 
   home.packages = with pkgs; [
-    font-awesome
-    cantarell-fonts
-    mako
-    waybar
-    sway-contrib.grimshot
-    corefonts
-    iosevka
+    qutebrowser
+    noto-fonts
+    noto-fonts-extra
+    noto-fonts-emoji
+    noto-fonts-cjk
+    fff
+    act
     autojump
     bitwig-studio
     blueman
+    cantarell-fonts
+    clojure
+    clojure-lsp
+    corefonts
     dropbox
-    firefox
+    font-awesome
     ghcid
-    swaylock
-    swayidle
-    swaybg
+    gopls
     imagemagick
+    iosevka
+    leiningen
     lutris
+    mako
     nixfmt
+    nixos-icons
     plantuml
     python-language-server
     pywal
     rofi-pass
     scrot
     spotify
+    sway-contrib.grimshot
+    swaybg
+    swayidle
+    swaylock
     tdesktop
     tldr
+    waybar
     youtube-dl
     (python37.withPackages (ps:
       with ps; [
@@ -140,6 +154,10 @@
       initExtra = ''
         cat ~/.cache/wal/sequences
         source ~/.cache/wal/colors-tty.sh
+
+        if [ "$(tty)" = "/dev/tty1" ]; then
+	       exec sway
+        fi
       '';
       enableAutosuggestions = true;
       enableCompletion = true;
@@ -164,16 +182,18 @@
         e = "emacsclient";
         k = "kubectl";
         p = "pass";
+        r = "ranger";
+        t = "gotop";
         df = "df -h";
         ns = "sudo nixos-rebuild switch";
         hs = "home-manager switch";
+        s = "systemctl --user";
       };
     };
   };
 
   services = {
     gpg-agent.enable = true;
-    pasystray.enable = true;
   };
 
   home.file = {
@@ -183,18 +203,24 @@
     '';
   };
 
-  xdg.configFile = {
-    "rofi/config.rasi".text = ''
-      configuration {
-      theme: "~/.cache/wal/colors-rofi-light";
-      }
-    '';
-    "waybar/config".source = ./dotfiles/waybar;
-    "waybar/style.css".source = ./dotfiles/style.css;
-    "mako/config".text = ''font=Iosevka Term 10
+  xdg = {
+    configFile = {
+        "rofi/config.rasi".text = ''
+        configuration {
+        theme: "~/.cache/wal/colors-rofi-light";
+        }
+        '';
+        "waybar/config".source = ./dotfiles/waybar;
+        "waybar/style.css".source = ./dotfiles/style.css;
+        "mako/config".text =
+          ''font=Iosevka Term 10
 background-color=#323232
 text-color=#FFFFFF
 border-size=0
 default-timeout=2000'';
+        "qutebrowser/config.py".source = ./dotfiles/qutebrowser.py;
+        "qutebrowser/qutewal.py".source = ./dotfiles/qutewal.py;
+    };
+
   };
 }

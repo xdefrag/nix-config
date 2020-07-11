@@ -6,6 +6,8 @@
 
   boot.cleanTmpDir = true;
 
+  boot.plymouth.enable = true;
+
   networking.hostName = "absu";
 
   networking.networkmanager.enable = true;
@@ -21,13 +23,10 @@
   
   environment.systemPackages = with pkgs; [
     brightnessctl
-    htop
+    gotop
     vim
-    busybox
-    killall
     zsh
     curl
-    wget
     ripgrep
     fd
     autojump
@@ -46,8 +45,11 @@
 
   sound.enable = true;
 
-  hardware.pulseaudio.enable = true;
-  hardware.pulseaudio.package = pkgs.pulseaudioFull;
+  hardware.pulseaudio = {
+    enable = true;
+    package = pkgs.pulseaudioFull;
+    systemWide = true;
+  };
 
   hardware.bluetooth.enable = true;
 

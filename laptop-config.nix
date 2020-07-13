@@ -44,6 +44,10 @@
     pollingInterval = 7;
   };
 
+  services.logind = {
+    lidSwitch = "hibernate";
+  };
+
   environment.systemPackages = with pkgs; [
     lm_sensors
   ];

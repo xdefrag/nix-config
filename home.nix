@@ -1,6 +1,34 @@
 { lib, pkgs, cfg, ... }:
 
 {
+  accounts.email.maildirBasePath = ".mail";
+
+  accounts.email.accounts = {
+    mycoldwinter = {
+      address = "mycoldwinter@gmail.com";
+      userName = "mycoldwinter@gmail.com";
+      realName = "Stanislav Karkavin";
+      primary = true;
+      flavor = "gmail.com";
+      passwordCommand = "${pkgs.pass}/bin/pass mycoldwinter@gmail.com";
+      msmtp.enable = true;
+      notmuch.enable = true;
+      neomutt.enable = true;
+      imapnotify = {
+        enable = true;
+        boxes = [ "Inbox" ];
+        onNotifyPost = "${pkgs.libnotify}/bin/notify-send mycoldwinter@gmail.com 'New mail'";
+      };
+      mbsync = {
+        enable = true;
+        create = "both";
+        expunge = "both";
+        remove = "both";
+        patterns = [ "*" "![Gmail]*" "[Gmail]/Sent Mail" ];
+      };
+    };
+  };
+
   home.sessionVariables = {
     EDITOR = "vim";
   };
@@ -17,7 +45,6 @@
     config = {
       bars = [{ command = "waybar"; }];
       fonts = [ "Iosevka 10" ];
-      keybindings = let mod = cfg.config.modifier; in lib.mkOptionDefault { };
       menu = "${pkgs.rofi}/bin/rofi -show run";
       modifier = "Mod4";
       terminal = "${pkgs.alacritty}/bin/alacritty";
@@ -29,31 +56,52 @@
       startup = [
         { command = "mako"; }
         { command = "dropbox"; }
+        { command = "qutebrowser"; }
+        { command = "telegram-desktop"; }
       ];
+      assigns = {
+        "1: web" = [ 
+          { class = "qutebrowser"; }
+        ];
+        "2: msg" = [
+          { class = "TelegramDesktop"; }
+        ];
+        "3: wrk" = [];
+        "4: msc" = [];
+      };
+      floating.criteria = [
+        { title = ".*mpv$"; }
+      ];
+      input = {
+        "*" = { 
+          xkb_layout = "us,ru";
+          xkb_options = "grp:ctrl_shift_toggle,ctrl:swapcaps";
+        };
+      };
+      keybindings = lib.mkOptionDefault {
+        "XF86AudioRaiseVolume" = "exec pactl set-sink-volume @DEFAULT_SINK@ +5%";
+        "XF86AudioLowerVolume" = "exec pactl set-sink-volume @DEFAULT_SINK@ -5%";
+        "XF86AudioMute" = "exec pactl set-sink-mute @DEFAULT_SINK@ toggle";
+        "XF86MonBrightnessDown" = "exec brightnessctl set 5%-";
+        "XF86MonBrightnessUp" = "exec brightnessctl set +5%";
+      };
     };
     extraConfig = ''
       include "$HOME/.cache/wal/colors-sway"
 
       output * background $wallpaper fill
       client.focused $color0 $background $foreground $color7 $background
-
-      input * {
-        xkb_layout "us,ru"
-        xkb_options "grp:ctrl_shift_toggle,ctrl:swapcaps"
-      }
-
-      bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
-      bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
-      bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
-      bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
-      bindsym XF86MonBrightnessUp exec brightnessctl set +5%
-      bindsym XF86AudioPlay exec playerctl play-pause
-      bindsym XF86AudioNext exec playerctl next
-      bindsym XF86AudioPrev exec playerctl previous
     '';
   };
 
   home.packages = with pkgs; [
+    gitAndTools.bfg-repo-cleaner
+    gitAndTools.git-absorb
+    gitAndTools.git-extras
+    gitAndTools.git-fame
+    gitAndTools.git-open
+    gitAndTools.git-secrets
+
     act
     autojump
     bitwig-studio
@@ -63,11 +111,14 @@
     dropbox
     fff
     font-awesome
+    git-doc
     gopls
     imagemagick
     iosevka
+    libnotify
     lutris
     mako
+    neofetch
     nixfmt
     nixos-icons
     noto-fonts
@@ -86,8 +137,10 @@
     swayidle
     swaylock
     tdesktop
+    thefuck
     tldr
     universal-ctags
+    w3m
     waybar
     youtube-dl
     (python37.withPackages (ps:
@@ -108,6 +161,7 @@
   nixpkgs.config.allowUnfree = true;
 
   programs = {
+    home-manager.enable = true;
     alacritty = {
       enable = true;
       settings = {
@@ -128,6 +182,11 @@
       # signing.key = "";
       userEmail = "me@xdefrag.dev";
       userName = "Stanislav Karkavin";
+      extraConfig = {
+        pull = {
+          rebase = true;
+        };
+      };
     };
     go = {
       enable = true;
@@ -135,9 +194,31 @@
       goBin = "go/bin";
       goPath = "go";
     };
-    gpg.enable = true;
+    gpg = {
+      enable = true;
+    };
     jq.enable = true;
     mpv.enable = true;
+    notmuch = {
+      enable = true;
+      hooks = {
+        preNew = "mbsync -a";
+      };
+    };
+    neomutt = {
+      enable = true;
+      editor = "${pkgs.vim}/bin/vim";
+      vimKeys = true;
+      sort = "date-received";
+      extraConfig = ''
+        auto_view text/html
+        alternative_order text/plain text/html
+      '';
+    };
+    mbsync = {
+      enable = true;
+    };
+    msmtp.enable = true;
     rofi = {
       enable = true;
       font = "Iosevka 10";
@@ -164,16 +245,23 @@
       oh-my-zsh = {
         enable = true;
         plugins = [
-          "git"
-          "extract"
-          "pass"
-          "rsync"
+          "autojump"
+          "bgnotify"
           "docker"
+          "extract"
+          "fancy-ctrl-z"
+          "fzf"
+          "git"
+          "gitignore"
+          "git-extras"
           "golang"
           "kubectl"
-          "autojump"
+          "man"
+          "pass"
+          "rsync"
+          "thefuck"
         ];
-        theme = "minimal";
+        theme = "lambda";
       };
       shellAliases = {
         v = "vim";
@@ -212,6 +300,11 @@
 
   services = {
     gpg-agent.enable = true;
+    mbsync = {
+      enable = true;
+      frequency = "*:0/5";
+      postExec = "${pkgs.notmuch}/bin/notmuch new";
+    };
   };
 
   xdg = {
@@ -228,5 +321,9 @@
         "qutebrowser/config.py".source = ./dotfiles/qutebrowser.py;
         "qutebrowser/qutewal.py".source = ./dotfiles/qutewal.py;
     };
+  };
+
+  home.file = {
+    ".mailcap".source = ./dotfiles/mailcap;
   };
 }

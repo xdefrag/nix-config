@@ -14,24 +14,39 @@
       msmtp.enable = true;
       notmuch.enable = true;
       neomutt.enable = true;
-      imapnotify = {
-        enable = true;
-        boxes = [ "Inbox" ];
-        onNotifyPost = "${pkgs.libnotify}/bin/notify-send mycoldwinter@gmail.com 'New mail'";
-      };
       mbsync = {
         enable = true;
         create = "both";
         expunge = "both";
         remove = "both";
-        patterns = [ "*" "![Gmail]*" "[Gmail]/Sent Mail" ];
+      };
+    };
+    dev = {
+      address = "me@xdefrag.dev";
+      userName = "me@xdefrag.dev";
+      realName = "Stanislav Karkavin";
+      passwordCommand = "${pkgs.pass}/bin/pass me@xdefrag.dev";
+      msmtp.enable = true;
+      notmuch.enable = true;
+      neomutt.enable = true;
+      mbsync = {
+        enable = true;
+        create = "both";
+        expunge = "both";
+        remove = "both";
+      };
+      smtp = {
+        host = "smtp.fastmail.com";
+        port = 465;
+      };
+      imap = {
+        host = "imap.fastmail.com";
+        port = 993;
       };
     };
   };
 
-  home.sessionVariables = {
-    EDITOR = "vim";
-  };
+  home.sessionVariables = { EDITOR = "vim"; };
 
   home.keyboard = {
     layout = "us,ru";
@@ -60,27 +75,23 @@
         { command = "telegram-desktop"; }
       ];
       assigns = {
-        "1: web" = [ 
-          { class = "qutebrowser"; }
-        ];
-        "2: msg" = [
-          { class = "TelegramDesktop"; }
-        ];
-        "3: wrk" = [];
-        "4: msc" = [];
+        "1: web" = [{ class = "qutebrowser"; }];
+        "2: msg" = [{ class = "TelegramDesktop"; }];
+        "3: wrk" = [ ];
+        "4: msc" = [ ];
       };
-      floating.criteria = [
-        { title = ".*mpv$"; }
-      ];
+      floating.criteria = [{ title = ".*mpv$"; }];
       input = {
-        "*" = { 
+        "*" = {
           xkb_layout = "us,ru";
           xkb_options = "grp:ctrl_shift_toggle,ctrl:swapcaps";
         };
       };
       keybindings = lib.mkOptionDefault {
-        "XF86AudioRaiseVolume" = "exec pactl set-sink-volume @DEFAULT_SINK@ +5%";
-        "XF86AudioLowerVolume" = "exec pactl set-sink-volume @DEFAULT_SINK@ -5%";
+        "XF86AudioRaiseVolume" =
+          "exec pactl set-sink-volume @DEFAULT_SINK@ +5%";
+        "XF86AudioLowerVolume" =
+          "exec pactl set-sink-volume @DEFAULT_SINK@ -5%";
         "XF86AudioMute" = "exec pactl set-sink-mute @DEFAULT_SINK@ toggle";
         "XF86MonBrightnessDown" = "exec brightnessctl set 5%-";
         "XF86MonBrightnessUp" = "exec brightnessctl set +5%";
@@ -111,11 +122,10 @@
     dropbox
     fff
     font-awesome
-    git-doc
-    gopls
+    go
+    goimports
     imagemagick
     iosevka
-    libnotify
     lutris
     mako
     neofetch
@@ -182,11 +192,7 @@
       # signing.key = "";
       userEmail = "me@xdefrag.dev";
       userName = "Stanislav Karkavin";
-      extraConfig = {
-        pull = {
-          rebase = true;
-        };
-      };
+      extraConfig = { pull = { rebase = true; }; };
     };
     go = {
       enable = true;
@@ -194,15 +200,19 @@
       goBin = "go/bin";
       goPath = "go";
     };
-    gpg = {
-      enable = true;
-    };
+    gpg = { enable = true; };
     jq.enable = true;
     mpv.enable = true;
     notmuch = {
       enable = true;
+      new = { tags = [ "unread" "inbox" ]; };
       hooks = {
         preNew = "mbsync -a";
+        postNew = ''
+          notmuch tag -inbox +sent -- from:me@xdefrag.dev or from:mycoldwinter@gmail.com
+          notmuch tag +newsletters -- from:peter@golangweekly.com or from:peter@webopsweekly.com
+          notmuch tag +notifications -- from:'*info*' or from: '*noreply*' or from '*no-reply*'
+                  '';
       };
     };
     neomutt = {
@@ -213,11 +223,17 @@
       extraConfig = ''
         auto_view text/html
         alternative_order text/plain text/html
+
+        set virtual_spoolfile=yes
+        set folder=notmuch-root-folder
+        virtual-mailboxes "unread" "notmuch://?query=tag:unread"
+        virtual-mailboxes "inbox" "notmuch://?query=tag:inbox"
+        virtual-mailboxes "sent" "notmuch://?query=tag:sent"
+        virtual-mailboxes "newsletters" "notmuch://?query=tag:newsletters"
+        virtual-mailboxes "notifications" "notmuch://?query=tag:notifications"
       '';
     };
-    mbsync = {
-      enable = true;
-    };
+    mbsync = { enable = true; };
     msmtp.enable = true;
     rofi = {
       enable = true;
@@ -236,7 +252,7 @@
         source ~/.cache/wal/colors-tty.sh
 
         if [ "$(tty)" = "/dev/tty1" ]; then
-	       exec sway
+               exec sway
         fi
       '';
       enableAutosuggestions = true;
@@ -275,31 +291,15 @@
         s = "systemctl --user";
       };
     };
-    vim = {
-      enable = true;
-      extraConfig = builtins.readFile ./dotfiles/vimrc;
-      plugins = with pkgs.vimPlugins; [
-        auto-pairs
-        fzf-vim
-        supertab
-        tagbar
-        vim-commentary
-        vim-dispatch
-        vim-eunuch
-        vim-gitgutter
-        vim-polyglot
-        vim-repeat
-        vim-surround
-        vim-unimpaired
-        wal-vim
-        vim-snippets
-        vim-snipmate
-      ];
-    };
   };
 
   services = {
-    gpg-agent.enable = true;
+    gpg-agent = {
+      enable = true;
+      pinentryFlavor = "curses";
+      defaultCacheTtl = 34560000;
+      maxCacheTtl = 34560000;
+    };
     mbsync = {
       enable = true;
       frequency = "*:0/5";
@@ -309,21 +309,19 @@
 
   xdg = {
     configFile = {
-        "rofi/config.rasi".text = ''
+      "rofi/config.rasi".text = ''
         configuration {
         theme: "~/.cache/wal/colors-rofi-light";
         }
-        '';
-        "rtorrent/rtorrent.rc".source = ./dotfiles/rtorrent.rc;
-        "waybar/config".source = ./dotfiles/waybar;
-        "waybar/style.css".source = ./dotfiles/style.css;
-        "mako/config".source = ./dotfiles/mako;
-        "qutebrowser/config.py".source = ./dotfiles/qutebrowser.py;
-        "qutebrowser/qutewal.py".source = ./dotfiles/qutewal.py;
+      '';
+      "rtorrent/rtorrent.rc".source = ./dotfiles/rtorrent.rc;
+      "waybar/config".source = ./dotfiles/waybar;
+      "waybar/style.css".source = ./dotfiles/style.css;
+      "mako/config".source = ./dotfiles/mako;
+      "qutebrowser/config.py".source = ./dotfiles/qutebrowser.py;
+      "qutebrowser/qutewal.py".source = ./dotfiles/qutewal.py;
     };
   };
 
-  home.file = {
-    ".mailcap".source = ./dotfiles/mailcap;
-  };
+  home.file = { ".mailcap".source = ./dotfiles/mailcap; };
 }

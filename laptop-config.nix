@@ -15,6 +15,7 @@
     ./docker.nix
     ./desktop.nix
     ./vpn.nix
+    ./vim.nix
   ];
 
   hardware.facetimehd.enable = true;

@@ -54,6 +54,14 @@ if has("patch-8.1.1904")
   set completepopup=align:menu,border:off,highlight:Pmenu
 endif
 
+let mapleader = " "
+
+nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>f :Files<CR>
+nnoremap <leader>r :Rg<CR>
+nnoremap <leader>s :Snippets<CR>
+nnoremap <leader>h :History<CR>
+
 inoremap jk <Esc>
 nnoremap j gj
 nnoremap k gk

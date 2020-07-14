@@ -6,7 +6,7 @@
 
   boot.cleanTmpDir = true;
 
-  boot.plymouth.enable = true;
+  boot.plymouth.enable = false;
 
   networking.hostName = "absu";
 
@@ -69,6 +69,8 @@
 
   users.defaultUserShell = pkgs.zsh;
 
+  services.mingetty.autologinUser = "xdefrag";
+
   users.users.xdefrag = {
     isNormalUser = true;
     extraGroups = ["wheel" "networkmanager" "docker" "jackaudio" "audio" "video"];
@@ -78,7 +80,7 @@
 
   security.sudo.wheelNeedsPassword = false;
 
-  services.nixosManual.showManual = true;
+  services.nixosManual.showManual = false;
 
   nix.gc = {
     automatic = true;

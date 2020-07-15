@@ -22,15 +22,15 @@
         "sway/workspaces",
         "sway/mode"
     ],
-    "modules-center": [
-        "sway/window"
-    ],
+    //"modules-center": [
+        // "sway/window"
+    //],
     "modules-right": [
         "network",
         // "memory",
         // "cpu",
         // "temperature",
-        "custom/keyboard-layout",
+        // "custom/keyboard-layout",
         "battery",
         "tray",
         // "clock#date",

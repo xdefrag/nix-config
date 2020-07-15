@@ -69,6 +69,7 @@
       };
       workspaceAutoBackAndForth = true;
       startup = [
+        { command = "gebaard -b"; }
         { command = "mako"; }
         { command = "dropbox"; }
         { command = "qutebrowser"; }
@@ -113,6 +114,10 @@
     gitAndTools.git-open
     gitAndTools.git-secrets
 
+    xdg_utils
+    gebaar-libinput
+    zathura
+    imv
     act
     autojump
     bitwig-studio
@@ -122,15 +127,11 @@
     dropbox
     fff
     font-awesome
-    go
     goimports
-    imagemagick
     iosevka
-    lutris
     mako
     neofetch
     nixfmt
-    nixos-icons
     noto-fonts
     noto-fonts-cjk
     noto-fonts-emoji
@@ -139,12 +140,10 @@
     pywal
     qutebrowser
     rofi-pass
-    rtv
     scrot
     spotify
     sway-contrib.grimshot
     swaybg
-    swayidle
     swaylock
     tdesktop
     thefuck
@@ -182,7 +181,6 @@
       };
     };
     command-not-found.enable = true;
-    feh.enable = true;
     fzf = {
       enable = true;
       enableZshIntegration = true;
@@ -289,14 +287,31 @@
         ns = "sudo nixos-rebuild switch";
         hs = "home-manager switch";
         s = "systemctl --user";
+        open = "xdg-open";
       };
     };
   };
 
+  gtk.enable = false;
+  qt.enable = false;
+
   services = {
+    redshift = {
+      enable = true;
+      package = pkgs.redshift-wlr;
+      latitude = "59";
+      longitude = "30";
+      brightness = {
+        day = "0.7";
+        night = "0.4";
+      };
+      temperature = {
+        day = 5700;
+        night = 3500;
+      };
+    };
     gpg-agent = {
       enable = true;
-      pinentryFlavor = "curses";
       defaultCacheTtl = 34560000;
       maxCacheTtl = 34560000;
     };
@@ -308,6 +323,7 @@
   };
 
   xdg = {
+    enable = true;
     configFile = {
       "rofi/config.rasi".text = ''
         configuration {
@@ -320,8 +336,64 @@
       "mako/config".source = ./dotfiles/mako;
       "qutebrowser/config.py".source = ./dotfiles/qutebrowser.py;
       "qutebrowser/qutewal.py".source = ./dotfiles/qutewal.py;
+      "gebaar/gebaard.toml".text = ''
+        [commands.swipe.three]
+        up = "sway fullscreen toggle"
+        down = "sway layout toggle"
+        left = "sway workspace next"
+        right = "sway workspace prev"
+      '';
+    };
+    mime.enable = false;
+    mimeApps = {
+      enable = true;
+      defaultApplications = {
+        "application/epub+zip" = [ "org.pwmt.zathura.desktop" ];
+        "application/pdf" = [ "org.pwmt.zathura.desktop" ];
+        "default-web-browser" = [ "org.qutebrowser.qutebrowser.desktop" ];
+        "image/jpeg" = [ "imv.desktop" ];
+        "image/png" = [ "imv.desktop" ];
+        "text/html" = [ "org.qutebrowser.qutebrowser.desktop" ];
+        "text/plain" = [ "vim.desktop" ];
+        "inode/directory" = [ "fff.desktop" ];
+      };
+    };
+    userDirs = {
+      enable = true;
+      desktop = "$HOME/desk";
+      documents = "$HOME/docs";
+      download = "$HOME/tmp";
+      music = "$HOME/music";
+      pictures = "$HOME/pics";
+      publicShare = "$HOME/public";
+      templates = "$HOME/templates";
+      videos = "$HOME/videos";
     };
   };
 
-  home.file = { ".mailcap".source = ./dotfiles/mailcap; };
+  home.file = {
+    ".mailcap".source = ./dotfiles/mailcap;
+    ".local/share/applications/fff.desktop".text = ''
+      [Desktop Entry]
+      Name=FFF
+      Comment=File browser
+      Exec=fff
+      Terminal=true
+      Type=Application
+      Icon=terminal
+      MimeType=inode/directory;
+    '';
+    ".local/share/applications/vim.desktop".text = ''
+      [Desktop Entry]
+      Name=Vim Text Editor
+      Comment=Edit text files
+      Exec=vim 
+      Terminal=true
+      Type=Application
+      Icon=terminal
+      Categories=Utility;TextEditor;
+      StartupNotify=true
+      MimeType=text/plain;
+    '';
+  };
 }

@@ -73,7 +73,7 @@
 
   users.users.xdefrag = {
     isNormalUser = true;
-    extraGroups = ["wheel" "networkmanager" "docker" "jackaudio" "audio" "video"];
+    extraGroups = ["wheel" "input" "networkmanager" "docker" "jackaudio" "audio" "video"];
     uid = 1000;
     shell = pkgs.zsh;
   };

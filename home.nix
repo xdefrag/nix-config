@@ -76,10 +76,8 @@
         { command = "telegram-desktop"; }
       ];
       assigns = {
-        "1: web" = [{ class = "qutebrowser"; }];
-        "2: msg" = [{ class = "TelegramDesktop"; }];
-        "3: wrk" = [ ];
-        "4: msc" = [ ];
+        "1:www" = [{ class = "qutebrowser"; }];
+        "2:mail" = [{ class = "TelegramDesktop"; }];
       };
       floating.criteria = [{ title = ".*mpv$"; }];
       input = {
@@ -114,6 +112,13 @@
     gitAndTools.git-open
     gitAndTools.git-secrets
 
+    goimports
+    golangci-lint
+    gomodifytags
+    gotests
+    impl
+    reftools
+
     xdg_utils
     gebaar-libinput
     zathura
@@ -127,7 +132,6 @@
     dropbox
     fff
     font-awesome
-    goimports
     iosevka
     mako
     neofetch
@@ -174,9 +178,18 @@
     alacritty = {
       enable = true;
       settings = {
+        env.TERM = "alacritty";
         font = {
           normal = { family = "Iosevka"; };
           size = 12.0;
+        };
+        window = {
+          padding = {
+            x = 0;
+            y = 0;
+          };
+          dynamic_padding = false;
+          decorations = "none";
         };
       };
     };
@@ -203,32 +216,45 @@
     mpv.enable = true;
     notmuch = {
       enable = true;
-      new = { tags = [ "unread" "inbox" ]; };
+      search.excludeTags = [ "deleted" "spam" "trash" "archive" ];
+      new.tags = [ "unread" "inbox" ];
       hooks = {
         preNew = "mbsync -a";
         postNew = ''
           notmuch tag -inbox +sent -- from:me@xdefrag.dev or from:mycoldwinter@gmail.com
-          notmuch tag +newsletters -- from:peter@golangweekly.com or from:peter@webopsweekly.com
-          notmuch tag +notifications -- from:'*info*' or from: '*noreply*' or from '*no-reply*'
-                  '';
+          notmuch tag +newsletters -inbox -- from:peter@golangweekly.com or from:peter@webopsweekly.com
+          notmuch tag +notifications -inbox -- from:'*info*' or from:'*noreply*' or from:'*no-reply*' or from:'*postmaster*'
+        '';
       };
     };
     neomutt = {
       enable = true;
-      editor = "${pkgs.vim}/bin/vim";
       vimKeys = true;
       sort = "date-received";
+      macros = [{
+        action = "<modify-labels-then-hide>+archive -unread -inbox<enter>";
+        key = "A";
+        map = "index";
+      }];
       extraConfig = ''
+        set date_format="%m-%d"
+        set index_format="%d | %-30F %s [%g]"
+
+        set help=no
+
         auto_view text/html
         alternative_order text/plain text/html
 
+        set fast_reply=yes
+        set include=yes
+
         set virtual_spoolfile=yes
         set folder=notmuch-root-folder
-        virtual-mailboxes "unread" "notmuch://?query=tag:unread"
         virtual-mailboxes "inbox" "notmuch://?query=tag:inbox"
         virtual-mailboxes "sent" "notmuch://?query=tag:sent"
         virtual-mailboxes "newsletters" "notmuch://?query=tag:newsletters"
         virtual-mailboxes "notifications" "notmuch://?query=tag:notifications"
+        virtual-mailboxes "archive" "notmuch://?query=tag:archive"
       '';
     };
     mbsync = { enable = true; };
@@ -246,6 +272,9 @@
     zsh = {
       enable = true;
       initExtra = ''
+        export TERM=xterm-256color
+        export PATH=$PATH:~/go/bin
+
         cat ~/.cache/wal/sequences
         source ~/.cache/wal/colors-tty.sh
 
@@ -288,6 +317,9 @@
         hs = "home-manager switch";
         s = "systemctl --user";
         open = "xdg-open";
+        nm = "notmuch";
+        mutt = "TERM=screen-256color neomutt";
+        neomutt = "TERM=screen-256color neomutt";
       };
     };
   };
@@ -356,6 +388,7 @@
         "text/html" = [ "org.qutebrowser.qutebrowser.desktop" ];
         "text/plain" = [ "vim.desktop" ];
         "inode/directory" = [ "fff.desktop" ];
+        "x-scheme-handler/mailto" = [ "mutt.desktop" ];
       };
     };
     userDirs = {
@@ -391,9 +424,19 @@
       Terminal=true
       Type=Application
       Icon=terminal
-      Categories=Utility;TextEditor;
       StartupNotify=true
       MimeType=text/plain;
     '';
+    ".local/share/applications/mutt.desktop".text = ''
+      [Desktop Entry]
+      Name=Mail
+      Exec=neomutt
+      Terminal=true
+      Type=Application
+      Icon=terminal
+      StartupNotify=true
+      MimeType=x-scheme-handler/mailto;
+    '';
+
   };
 }

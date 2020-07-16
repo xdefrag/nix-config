@@ -1,12 +1,18 @@
-colorscheme wal
-
 filetype plugin on
 filetype indent on
 
-set nocompatible
 set nobackup
 set nowritebackup
 set noswapfile
+set autoread
+set autowriteall
+set history=9000
+set undofile
+set undodir=~/.vimundo
+
+if isdirectory($HOME . '/.vimundo') == 0
+  call mkdir($HOME.'/.vimundo', 'p')
+endif
 
 set mouse=
 set ttymouse=sgr
@@ -19,7 +25,7 @@ set clipboard=unnamed
 set nocursorline
 set showmatch
 set noruler
-set list
+set nolist
 
 set noerrorbells
 set novisualbell
@@ -37,7 +43,7 @@ set wildignore+=*/node_modules/*,*/vendor/*
 set foldenable
 set foldlevelstart=10
 set foldnestmax=20
-set foldmethod=indent
+set foldmethod=syntax
 
 let g:netrw_banner = 0
 let g:netrw_keepdir = 0
@@ -51,9 +57,6 @@ set backspace=2
 
 set laststatus=2
 set statusline=
-set statusline +=%1*\ %n\ %*            "buffer number
-set statusline +=%5*%{&ff}%*            "file format
-set statusline +=%3*%y%*                "file type
 set statusline +=%4*\ %<%F%*            "full path
 set statusline +=%2*%m%*                "modified flag
 set statusline +=%1*%=%5l%*             "current line
@@ -62,11 +65,22 @@ set statusline +=%1*%4v\ %*             "virtual column number
 
 let mapleader = " "
 
+" set notermguicolors
+" set t_Co=256
+set background=dark
+
+" let g:beelzebub_bg="233"
+" let g:beelzebub_fg="250"
+" let g:beelzebub_mute="60"
+
+colorscheme beelzebub
+
 nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>f :Files<CR>
 nnoremap <leader>r :Rg<CR>
 nnoremap <leader>s :Snippets<CR>
 nnoremap <leader>h :History<CR>
+nnoremap <leader>c :History:<CR>
 
 inoremap jk <Esc>
 nnoremap j gj
@@ -75,6 +89,20 @@ nnoremap ; :
 vnoremap ; :
 nnoremap L $
 nnoremap H ^
+nnoremap Q q
+nnoremap q :close<CR>
+
+nnoremap <silent> g= mzgg=G`zzz
+xnoremap <  <gv
+xnoremap >  >gv
+nnoremap <C-u> <C-u>zz
+nnoremap <C-d> <C-d>zz
+nnoremap <C-f> <C-f>zz
+nnoremap <C-b> <C-b>zz
+nnoremap <silent> n :norm! nzz<CR>
+nnoremap <silent> N :norm! Nzz<CR>
+vnoremap <silent> n :norm! nzz<CR>
+vnoremap <silent> N :norm! Nzz<CR>
 
 noremap <Up> <nop>
 noremap <Down> <nop>
@@ -84,3 +112,16 @@ inoremap <Up> <nop>
 inoremap <Down> <nop>
 inoremap <Left> <nop>
 inoremap <Right> <nop>
+
+augroup dispatch_settings
+	autocmd!
+	autocmd FileType go let b:dispatch = 'goimports -w %'
+	autocmd FileType go compiler go
+	autocmd FileType nix let b:dispatch = 'nixfmt %'
+augroup end
+
+augroup remember_folds
+	autocmd!
+	autocmd BufWinLeave * mkview
+	autocmd BufWinEnter * silent! loadview
+augroup END

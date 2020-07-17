@@ -105,45 +105,17 @@
   };
 
   home.packages = with pkgs; [
-    gitAndTools.bfg-repo-cleaner
-    gitAndTools.git-absorb
-    gitAndTools.git-extras
-    gitAndTools.git-fame
-    gitAndTools.git-open
-    gitAndTools.git-secrets
-
-    goimports
-    golangci-lint
-    gomodifytags
-    gotests
-    impl
-    reftools
-
-    (python37.withPackages (ps:
-      with ps; [
-        Keras
-        flake8
-        jupyter
-        numpy
-        pip
-        pytest
-        tensorflow
-        tensorflow-tensorboard
-      ]))
-
-    xdg_utils
-    gebaar-libinput
-    zathura
-    imv
-    act
     autojump
     bitwig-studio
     blueman
+    cached-nix-shell
     cantarell-fonts
     corefonts
     dropbox
     fff
     font-awesome
+    gebaar-libinput
+    imv
     iosevka
     mako
     neofetch
@@ -152,7 +124,6 @@
     noto-fonts-cjk
     noto-fonts-emoji
     noto-fonts-extra
-    plantuml
     pywal
     qutebrowser
     rofi-pass
@@ -164,10 +135,11 @@
     tdesktop
     thefuck
     tldr
-    universal-ctags
     w3m
     waybar
-    youtube-dl 
+    xdg_utils
+    youtube-dl
+    zathura
   ];
 
   news.display = "silent";
@@ -194,7 +166,6 @@
         };
       };
     };
-    command-not-found.enable = true;
     fzf = {
       enable = true;
       enableZshIntegration = true;
@@ -206,14 +177,7 @@
       userName = "Stanislav Karkavin";
       extraConfig = { pull = { rebase = true; }; };
     };
-    go = {
-      enable = true;
-      packages = { };
-      goBin = "go/bin";
-      goPath = "go";
-    };
     gpg = { enable = true; };
-    jq.enable = true;
     mpv.enable = true;
     notmuch = {
       enable = true;
@@ -266,10 +230,6 @@
     };
     rtorrent.enable = true;
     ssh.enable = true;
-    texlive = {
-      enable = true;
-      # package = pkgs.texlive.combined.scheme-full;
-    };
     zsh = {
       enable = true;
       initExtra = ''
@@ -308,19 +268,20 @@
         theme = "lambda";
       };
       shellAliases = {
-        v = "vim";
-        k = "kubectl";
-        p = "pass";
-        r = "ranger";
-        t = "gotop";
         df = "df -h";
-        ns = "sudo nixos-rebuild switch";
         hs = "home-manager switch";
-        s = "systemctl --user";
-        open = "xdg-open";
-        nm = "notmuch";
+        k = "kubectl";
         mutt = "TERM=screen-256color neomutt";
         neomutt = "TERM=screen-256color neomutt";
+        nm = "notmuch";
+        ns = "sudo nixos-rebuild switch";
+        nsh = "cached-nix-shell";
+        open = "xdg-open";
+        p = "pass";
+        r = "ranger";
+        s = "systemctl --user";
+        t = "gotop";
+        v = "vim";
       };
     };
   };

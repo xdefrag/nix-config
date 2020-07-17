@@ -1,0 +1,13 @@
+snippet sh "Nix's shell template"
+{ pkgs ? with import <nixpkgs> {} }:
+
+pkgs.mkShell {
+	buildInputs = with pkgs; [
+		${1:go}
+	];
+
+	shellHook = ''
+		export PATH=$PATH:~/go/bin
+	'';
+}
+endsnippet

@@ -119,6 +119,18 @@
     impl
     reftools
 
+    (python37.withPackages (ps:
+      with ps; [
+        Keras
+        flake8
+        jupyter
+        numpy
+        pip
+        pytest
+        tensorflow
+        tensorflow-tensorboard
+      ]))
+
     xdg_utils
     gebaar-libinput
     zathura
@@ -155,18 +167,7 @@
     universal-ctags
     w3m
     waybar
-    youtube-dl
-    (python37.withPackages (ps:
-      with ps; [
-        Keras
-        flake8
-        jupyter
-        numpy
-        pip
-        pytest
-        tensorflow
-        tensorflow-tensorboard
-      ]))
+    youtube-dl 
   ];
 
   news.display = "silent";

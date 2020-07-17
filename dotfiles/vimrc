@@ -118,6 +118,8 @@ augroup dispatch_settings
 	autocmd FileType go let b:dispatch = 'goimports -w %'
 	autocmd FileType go compiler go
 	autocmd FileType nix let b:dispatch = 'nixfmt %'
+	autocmd FileType nix compiler nix-build
+	autocmd FileType py compiler flake8
 augroup end
 
 augroup remember_folds

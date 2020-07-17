@@ -104,43 +104,51 @@
     '';
   };
 
-  home.packages = with pkgs; [
-    autojump
-    bitwig-studio
-    blueman
-    cached-nix-shell
-    cantarell-fonts
-    corefonts
-    dropbox
-    fff
-    font-awesome
-    gebaar-libinput
-    imv
-    iosevka
-    mako
-    neofetch
-    nixfmt
-    noto-fonts
-    noto-fonts-cjk
-    noto-fonts-emoji
-    noto-fonts-extra
-    pywal
-    qutebrowser
-    rofi-pass
-    scrot
-    spotify
-    sway-contrib.grimshot
-    swaybg
-    swaylock
-    tdesktop
-    thefuck
-    tldr
-    w3m
-    waybar
-    xdg_utils
-    youtube-dl
-    zathura
-  ];
+  home.packages = with pkgs;
+    with pkgs.gitAndTools; [
+      bfg-repo-cleaner
+      git-absorb
+      git-extras
+      git-fame
+      git-open
+      git-secrets
+
+      autojump
+      bitwig-studio
+      blueman
+      cached-nix-shell
+      cantarell-fonts
+      corefonts
+      dropbox
+      fff
+      font-awesome
+      gebaar-libinput
+      imv
+      iosevka
+      mako
+      neofetch
+      nixfmt
+      noto-fonts
+      noto-fonts-cjk
+      noto-fonts-emoji
+      noto-fonts-extra
+      pywal
+      qutebrowser
+      rofi-pass
+      scrot
+      spotify
+      sway-contrib.grimshot
+      swaybg
+      swaylock
+      tdesktop
+      thefuck
+      tldr
+      w3m
+      waybar
+      xdg_utils
+      youtube-dl
+      zathura
+    ];
 
   news.display = "silent";
 

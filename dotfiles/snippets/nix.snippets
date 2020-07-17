@@ -1,3 +1,9 @@
+snippet pkg "Packages as variable or import"
+{ pkgs ? import <nixpkgs> {} }:
+
+${0}
+endsnipet
+
 snippet sh "Nix's shell template"
 { pkgs ? with import <nixpkgs> {} }:
 

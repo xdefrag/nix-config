@@ -23,21 +23,20 @@
   
   environment.systemPackages = with pkgs; [
     brightnessctl
-    gotop
-    zsh
     curl
-    ripgrep
     fd
-    autojump
-    openssl
-    gnupg
-    unzip
-    p7zip
-    unar
-    ncdu
     git
-    tree
+    gnupg
+    gotop
+    ncdu
+    openssl
+    p7zip
+    parted
     pass
+    ripgrep
+    tree
+    unar
+    unzip
   ];
 
   networking.firewall.enable = true;
@@ -56,18 +55,14 @@
   services.dnsmasq.servers = ["8.8.8.8" "8.8.4.4"];
   services.blueman.enable = true;
 
-  programs.zsh.enable = true;
-  programs.zsh.ohMyZsh.enable = true;
-  programs.zsh.ohMyZsh.plugins = [
-    "git"
-    "extract"
-    "rsync"
-  ];
-  programs.zsh.ohMyZsh.theme = "minimal";
+  services.udisks2.enable = true;
+  services.devmon.enable = true;
 
   programs.gnupg.agent = { enable = true; enableSSHSupport = true; }; 
 
-  users.defaultUserShell = pkgs.zsh;
+  programs.fish.enable = true;
+
+  users.defaultUserShell = pkgs.fish;
 
   services.mingetty.autologinUser = "xdefrag";
 
@@ -75,7 +70,7 @@
     isNormalUser = true;
     extraGroups = ["wheel" "input" "networkmanager" "docker" "jackaudio" "audio" "video"];
     uid = 1000;
-    shell = pkgs.zsh;
+    shell = pkgs.fish;
   };
 
   security.sudo.wheelNeedsPassword = false;

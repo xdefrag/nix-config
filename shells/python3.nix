@@ -4,11 +4,12 @@ pkgs.mkShell {
   name = "python3";
 
   buildInputs = with pkgs.python38Packages; [
+    pkgs.python38Full
+
     flake8
     pip
     pylint
     pytest
-    python38Full
     virtualenv
   ];
 

@@ -17,3 +17,18 @@ pkgs.mkShell {
 	'';
 }
 endsnippet
+
+snippet ov "Override derivation's attributes"
+pkgs.${1:name}.overrideAttrs (oldAttrs: rec {
+	${2}
+});
+endsnippet
+
+snippet ffg "Fetch from github"
+pkgs.fetchFromGitHub {
+	owner = "${1}";
+	repo = "${2}";
+	rev = "${3:master}";
+	sha256 = "${4}";
+};
+endsnippet

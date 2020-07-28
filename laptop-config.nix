@@ -17,12 +17,13 @@
     ./vim.nix
   ];
 
+  nix.trustedUsers = [ "root" "xdefrag" ];
+
   hardware.facetimehd.enable = true;
   hardware.opengl.enable = true;
   hardware.opengl.driSupport = true;
 
-  boot.kernelModules = [
-    "coretemp" "applesmc" "intel_pstate=disable" ];
+  boot.kernelModules = [ "coretemp" "applesmc" "intel_pstate=disable" ];
 
   services.tlp = {
     enable = true;
@@ -44,11 +45,7 @@
     pollingInterval = 7;
   };
 
-  services.logind = {
-    lidSwitch = "hibernate";
-  };
+  services.logind = { lidSwitch = "hibernate"; };
 
-  environment.systemPackages = with pkgs; [
-    lm_sensors
-  ];
+  environment.systemPackages = with pkgs; [ lm_sensors ];
 }

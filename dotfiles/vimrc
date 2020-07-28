@@ -45,6 +45,10 @@ set foldlevelstart=10
 set foldnestmax=20
 set foldmethod=syntax
 
+set textwidth=79
+set colorcolumn=80
+set nowrap
+
 let g:netrw_banner = 0
 let g:netrw_keepdir = 0
 let g:netrw_liststyle = 1
@@ -62,6 +66,10 @@ set statusline +=%2*%m%*                "modified flag
 set statusline +=%1*%=%5l%*             "current line
 set statusline +=%2*/%L%*               "total lines
 set statusline +=%1*%4v\ %*             "virtual column number
+
+set omnifunc=syntaxcomplete#Complete
+set completeopt=menuone,noinsert,noselect
+set shortmess+=c
 
 let mapleader = " "
 
@@ -121,9 +129,3 @@ augroup dispatch_settings
 	autocmd FileType nix compiler nix-build
 	autocmd FileType py compiler flake8
 augroup end
-
-augroup remember_folds
-	autocmd!
-	autocmd BufWinLeave * mkview
-	autocmd BufWinEnter * silent! loadview
-augroup END

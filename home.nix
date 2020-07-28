@@ -1,5 +1,7 @@
 { lib, pkgs, cfg, ... }:
 
+with builtins;
+
 {
   accounts.email.maildirBasePath = ".mail";
 
@@ -79,7 +81,11 @@
         "1:www" = [{ class = "qutebrowser"; }];
         "2:mail" = [{ class = "TelegramDesktop"; }];
       };
-      floating.criteria = [{ title = ".*mpv$"; }];
+      floating.criteria = [{
+        title = ".*mpv$";
+      }
+      # { instance = "Godot_Engine"; title = ""; }
+        ];
       input = {
         "*" = {
           xkb_layout = "us,ru";
@@ -113,18 +119,20 @@
       git-open
       git-secrets
 
-      autojump
+      jq
+      nnn
+      pandoc
       bitwig-studio
       blueman
-      cached-nix-shell
+      # cached-nix-shell
       cantarell-fonts
       corefonts
       dropbox
-      fff
       font-awesome
       gebaar-libinput
       imv
       iosevka
+      libnotify
       mako
       neofetch
       nixfmt
@@ -137,12 +145,13 @@
       rofi-pass
       scrot
       spotify
-      sway-contrib.grimshot
+      # sway-contrib.grimshot
       swaybg
       swaylock
       tdesktop
       thefuck
       tldr
+      urlview
       w3m
       waybar
       xdg_utils
@@ -174,10 +183,7 @@
         };
       };
     };
-    fzf = {
-      enable = true;
-      enableZshIntegration = true;
-    };
+    fzf.enable = true;
     git = {
       enable = true;
       # signing.key = "";
@@ -232,66 +238,17 @@
     };
     mbsync = { enable = true; };
     msmtp.enable = true;
+    newsboat = {
+      enable = true;
+      autoReload = true;
+      extraConfig = readFile ./dotfiles/newsboat;
+    };
     rofi = {
       enable = true;
       font = "Iosevka 10";
     };
     rtorrent.enable = true;
     ssh.enable = true;
-    zsh = {
-      enable = true;
-      initExtra = ''
-        export TERM=xterm-256color
-        export PATH=$PATH:~/go/bin
-
-        cat ~/.cache/wal/sequences
-        source ~/.cache/wal/colors-tty.sh
-
-        if [ "$(tty)" = "/dev/tty1" ]; then
-               exec sway
-        fi
-      '';
-      enableAutosuggestions = true;
-      enableCompletion = true;
-      autocd = true;
-      oh-my-zsh = {
-        enable = true;
-        plugins = [
-          "autojump"
-          "bgnotify"
-          "docker"
-          "extract"
-          "fancy-ctrl-z"
-          "fzf"
-          "git"
-          "gitignore"
-          "git-extras"
-          "golang"
-          "kubectl"
-          "man"
-          "pass"
-          "rsync"
-          "thefuck"
-        ];
-        theme = "lambda";
-      };
-      shellAliases = {
-        df = "df -h";
-        hs = "home-manager switch";
-        k = "kubectl";
-        mutt = "TERM=screen-256color neomutt";
-        neomutt = "TERM=screen-256color neomutt";
-        nm = "notmuch";
-        ns = "sudo nixos-rebuild switch";
-        nsh = "cached-nix-shell";
-        open = "xdg-open";
-        p = "pass";
-        r = "ranger";
-        s = "systemctl --user";
-        t = "gotop";
-        v = "vim";
-      };
-    };
   };
 
   gtk.enable = false;
@@ -304,8 +261,8 @@
       latitude = "59";
       longitude = "30";
       brightness = {
-        day = "0.7";
-        night = "0.4";
+        day = "1";
+        night = "0.7";
       };
       temperature = {
         day = 5700;
@@ -327,6 +284,7 @@
   xdg = {
     enable = true;
     configFile = {
+      "fish/config.fish".source = ./dotfiles/config.fish;
       "rofi/config.rasi".text = ''
         configuration {
         theme: "~/.cache/wal/colors-rofi-light";
@@ -376,6 +334,10 @@
 
   home.file = {
     ".mailcap".source = ./dotfiles/mailcap;
+    ".newsboat/urls".text = readFile ~/Dropbox/newsboat-urls;
+    "bin".source = ./bin;
+    ".vim/UltiSnips".source = ./dotfiles/snippets;
+    ".vim/compiler".source = ./dotfiles/compiler;
     ".local/share/applications/fff.desktop".text = ''
       [Desktop Entry]
       Name=FFF
@@ -407,6 +369,5 @@
       StartupNotify=true
       MimeType=x-scheme-handler/mailto;
     '';
-
   };
 }

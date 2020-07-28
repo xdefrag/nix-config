@@ -15,6 +15,8 @@ in {
 
   environment.systemPackages = with pkgs;
     [
+      python38Full
+
       ((vim_configurable.override { python = python3; }).customize {
         name = "vim";
         vimrcConfig.customRC = builtins.readFile ./dotfiles/vimrc;
@@ -33,6 +35,7 @@ in {
           vim-snippets
           vim-surround
           vim-unimpaired
+          vim-wakatime
         ];
       })
     ];

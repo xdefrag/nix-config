@@ -2,7 +2,10 @@
 
 with builtins;
 
-{
+let
+  bash_sensible = fetchurl
+    "https://raw.githubusercontent.com/mrzool/bash-sensible/master/sensible.bash";
+in {
   accounts.email.maildirBasePath = ".mail";
 
   accounts.email.accounts = {
@@ -119,6 +122,9 @@ with builtins;
       git-open
       git-secrets
 
+      bash-completion
+      cv
+      ddgr
       wofi
       bitwig-studio
       blueman
@@ -149,7 +155,6 @@ with builtins;
       swaybg
       swaylock
       tdesktop
-      thefuck
       tldr
       universal-ctags
       urlview
@@ -184,7 +189,29 @@ with builtins;
         };
       };
     };
-    fzf.enable = true;
+    bash = {
+      initExtra = readFile bash_sensible;
+      profileExtra = ''
+        export PS1="\w ⚔️  "
+      '';
+      enable = true;
+      enableAutojump = true;
+      sessionVariables = {
+        EDITOR = "vim";
+        VISUAL = "$EDITOR";
+        PATH = "$PATH:~/bin";
+      };
+      shellAliases = {
+        v = "vim";
+        l = "ls -h --group-directories-first";
+        la = "ls -h --group-directories-first --all";
+        ".." = "cd ..";
+        ns = "sudo nixos-rebuild switch";
+        hs = "home-manager switch";
+        t = "gotop";
+        p = "progress";
+      };
+    };
     git = {
       enable = true;
       # signing.key = "";
@@ -281,7 +308,6 @@ with builtins;
   xdg = {
     enable = true;
     configFile = {
-      "fish/config.fish".source = ./dotfiles/config.fish;
       "rtorrent/rtorrent.rc".source = ./dotfiles/rtorrent.rc;
       "waybar/config".source = ./dotfiles/waybar;
       "waybar/style.css".source = ./dotfiles/style.css;
@@ -331,9 +357,9 @@ with builtins;
   };
 
   home.file = {
+    "bin".source = ./bin;
     ".mailcap".source = ./dotfiles/mailcap;
     ".newsboat/urls".text = readFile ~/Dropbox/newsboat-urls;
-    "bin".source = ./bin;
     ".vim/UltiSnips".source = ./dotfiles/snippets;
     ".vim/compiler".source = ./dotfiles/compiler;
     ".local/share/applications/fff.desktop".text = ''

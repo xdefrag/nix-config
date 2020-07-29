@@ -12,6 +12,7 @@
         neosnippet-snippets
         vim-commentary
         vim-dispatch
+        vim-eunuch
         vim-polyglot
         vim-surround
         vim-unimpaired

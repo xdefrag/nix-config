@@ -63,9 +63,7 @@
     enableSSHSupport = true;
   };
 
-  programs.fish.enable = true;
-
-  users.defaultUserShell = pkgs.fish;
+  users.defaultUserShell = pkgs.bash;
 
   services.mingetty.autologinUser = "xdefrag";
 
@@ -74,7 +72,7 @@
     extraGroups =
       [ "wheel" "input" "networkmanager" "docker" "jackaudio" "audio" "video" ];
     uid = 1000;
-    shell = pkgs.fish;
+    shell = pkgs.bash;
   };
 
   security.sudo.wheelNeedsPassword = false;

@@ -10,8 +10,6 @@ alias mutt="neomutt"
 alias nm=notmuch
 alias c=clear
 
-cat ~/.cache/wal/sequences
-
 function fish_greeting
 end
 

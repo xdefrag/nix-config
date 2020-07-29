@@ -20,7 +20,7 @@
   console.useXkbConfig = true;
 
   time.timeZone = "Europe/Moscow";
-  
+
   environment.systemPackages = with pkgs; [
     brightnessctl
     curl
@@ -52,13 +52,16 @@
   hardware.bluetooth.enable = true;
 
   services.dnsmasq.enable = true;
-  services.dnsmasq.servers = ["8.8.8.8" "8.8.4.4"];
+  services.dnsmasq.servers = [ "8.8.8.8" "8.8.4.4" ];
   services.blueman.enable = true;
 
   services.udisks2.enable = true;
   services.devmon.enable = true;
 
-  programs.gnupg.agent = { enable = true; enableSSHSupport = true; }; 
+  programs.gnupg.agent = {
+    enable = true;
+    enableSSHSupport = true;
+  };
 
   programs.fish.enable = true;
 
@@ -68,7 +71,8 @@
 
   users.users.xdefrag = {
     isNormalUser = true;
-    extraGroups = ["wheel" "input" "networkmanager" "docker" "jackaudio" "audio" "video"];
+    extraGroups =
+      [ "wheel" "input" "networkmanager" "docker" "jackaudio" "audio" "video" ];
     uid = 1000;
     shell = pkgs.fish;
   };

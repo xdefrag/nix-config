@@ -62,7 +62,7 @@ with builtins;
     config = {
       bars = [{ command = "waybar"; }];
       fonts = [ "Iosevka 10" ];
-      menu = "${pkgs.rofi}/bin/rofi -show run";
+      menu = "${pkgs.wofi}/bin/wofi --show run";
       modifier = "Mod4";
       terminal = "${pkgs.alacritty}/bin/alacritty";
       window = {
@@ -119,38 +119,39 @@ with builtins;
       git-open
       git-secrets
 
-      jq
-      nnn
-      pandoc
+      wofi
       bitwig-studio
       blueman
-      # cached-nix-shell
       cantarell-fonts
       corefonts
       dropbox
       font-awesome
+      fswatch
       gebaar-libinput
+      gnumake
       imv
       iosevka
+      jq
       libnotify
       mako
       neofetch
       nixfmt
+      nnn
       noto-fonts
       noto-fonts-cjk
       noto-fonts-emoji
       noto-fonts-extra
+      pandoc
       pywal
       qutebrowser
-      rofi-pass
       scrot
       spotify
-      # sway-contrib.grimshot
       swaybg
       swaylock
       tdesktop
       thefuck
       tldr
+      universal-ctags
       urlview
       w3m
       waybar
@@ -243,10 +244,6 @@ with builtins;
       autoReload = true;
       extraConfig = readFile ./dotfiles/newsboat;
     };
-    rofi = {
-      enable = true;
-      font = "Iosevka 10";
-    };
     rtorrent.enable = true;
     ssh.enable = true;
   };
@@ -285,11 +282,6 @@ with builtins;
     enable = true;
     configFile = {
       "fish/config.fish".source = ./dotfiles/config.fish;
-      "rofi/config.rasi".text = ''
-        configuration {
-        theme: "~/.cache/wal/colors-rofi-light";
-        }
-      '';
       "rtorrent/rtorrent.rc".source = ./dotfiles/rtorrent.rc;
       "waybar/config".source = ./dotfiles/waybar;
       "waybar/style.css".source = ./dotfiles/style.css;
@@ -302,6 +294,12 @@ with builtins;
         down = "sway layout toggle"
         left = "sway workspace next"
         right = "sway workspace prev"
+      '';
+      "git/ignore".text = ''
+        dist/
+
+        tags
+        tags.lock
       '';
     };
     mime.enable = false;

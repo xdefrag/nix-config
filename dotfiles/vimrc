@@ -1,42 +1,54 @@
 filetype plugin on
 filetype indent on
 
+set nohidden
 set nobackup
 set nowritebackup
 set noswapfile
 set autoread
 set autowriteall
 set history=9000
+set undolevels=500
 set undofile
 set undodir=~/.vimundo
 
 if isdirectory($HOME . '/.vimundo') == 0
-  call mkdir($HOME.'/.vimundo', 'p')
+	call mkdir($HOME.'/.vimundo', 'p')
 endif
 
 set mouse=
 set ttymouse=sgr
 set updatetime=500
 set balloondelay=250
-set signcolumn=yes
+set signcolumn=no
+set scrolloff=999
+set virtualedit=block,onemore
 
 set clipboard=unnamed
 
 set nocursorline
 set showmatch
-set noruler
-set nolist
+set mat=1
+set ruler
+set list
+set listchars=tab:▸\ ,trail:•,extends:»,precedes:«,nbsp:␣
 
 set noerrorbells
 set novisualbell
 set t_vb=
+
 set lazyredraw
+set ttyfast
+
+set splitbelow
+set splitright
 
 set incsearch
 set hlsearch
 set ignorecase
+set nowrapscan
+set gdefault
 
-set path+=**
 set wildmenu
 set wildignore+=*/node_modules/*,*/vendor/*
 
@@ -46,49 +58,39 @@ set foldnestmax=20
 set foldmethod=syntax
 
 set textwidth=79
-set colorcolumn=80
+set colorcolumn=0
 set nowrap
+set linebreak
+set breakindent
 
 let g:netrw_banner = 0
 let g:netrw_keepdir = 0
 let g:netrw_liststyle = 1
 let g:netrw_sort_options = 'i'
 
+set exrc
+set secure
+
 set autoindent
 set smartindent
 
-set backspace=2
+set backspace=indent,eol,start
 
 set laststatus=2
-set statusline=
-set statusline +=%4*\ %<%F%*            "full path
-set statusline +=%2*%m%*                "modified flag
-set statusline +=%1*%=%5l%*             "current line
-set statusline +=%2*/%L%*               "total lines
-set statusline +=%1*%4v\ %*             "virtual column number
 
 set omnifunc=syntaxcomplete#Complete
 set completeopt=menuone,noinsert,noselect
 set shortmess+=c
 
+set tags=./tags,tags
+
+set grepprg=rg\ --vimgrep\ $*
+set grepformat=%f:%l:%c:%m
+
+command! -nargs=* G grep <args> | cwindow
+command! -nargs=* E edit **/<args>
+
 let mapleader = " "
-
-" set notermguicolors
-" set t_Co=256
-set background=dark
-
-" let g:beelzebub_bg="233"
-" let g:beelzebub_fg="250"
-" let g:beelzebub_mute="60"
-
-colorscheme beelzebub
-
-nnoremap <leader>b :Buffers<CR>
-nnoremap <leader>f :Files<CR>
-nnoremap <leader>r :Rg<CR>
-nnoremap <leader>s :Snippets<CR>
-nnoremap <leader>h :History<CR>
-nnoremap <leader>c :History:<CR>
 
 inoremap jk <Esc>
 nnoremap j gj
@@ -99,18 +101,13 @@ nnoremap L $
 nnoremap H ^
 nnoremap Q q
 nnoremap q :close<CR>
-
-nnoremap <silent> g= mzgg=G`zzz
+nnoremap g= mzgg=G`zzz
 xnoremap <  <gv
 xnoremap >  >gv
-nnoremap <C-u> <C-u>zz
-nnoremap <C-d> <C-d>zz
-nnoremap <C-f> <C-f>zz
-nnoremap <C-b> <C-b>zz
-nnoremap <silent> n :norm! nzz<CR>
-nnoremap <silent> N :norm! Nzz<CR>
-vnoremap <silent> n :norm! nzz<CR>
-vnoremap <silent> N :norm! Nzz<CR>
+nnoremap <Tab> :bnext<CR>
+nnoremap <S-Tab> :bprev<CR>
+nnoremap <C-q> :bd<CR>
+
 
 noremap <Up> <nop>
 noremap <Down> <nop>
@@ -129,3 +126,22 @@ augroup dispatch_settings
 	autocmd FileType nix compiler nix-build
 	autocmd FileType py compiler flake8
 augroup end
+
+imap <C-k> <Plug>(neosnippet_expand_or_jump)
+smap <C-k> <Plug>(neosnippet_expand_or_jump)
+xmap <C-k> <Plug>(neosnippet_expand_target)
+
+if has('conceal')
+	set conceallevel=2 concealcursor=niv
+endif
+
+let g:neosnippet#snippets_directory='~/.vim/snippets'
+
+set notermguicolors
+set t_Co=16
+set t_ut=
+
+highlight clear
+highlight LineNr NONE
+
+syntax off

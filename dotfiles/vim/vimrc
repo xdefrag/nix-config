@@ -16,6 +16,8 @@ if isdirectory($HOME . '/.vimundo') == 0
 	call mkdir($HOME.'/.vimundo', 'p')
 endif
 
+set viminfo+=n~/.vim/viminfo
+
 set mouse=
 set ttymouse=sgr
 set updatetime=500
@@ -87,8 +89,8 @@ set tags=./tags,tags
 set grepprg=rg\ --vimgrep\ $*
 set grepformat=%f:%l:%c:%m
 
-command! -nargs=* G grep <args> | cwindow
-command! -nargs=* E edit **/<args>
+command! -nargs=* Grep grep <args> | cwindow
+command! -nargs=* Edit edit **/<args>
 
 let mapleader = " "
 
@@ -99,33 +101,13 @@ nnoremap ; :
 vnoremap ; :
 nnoremap L $
 nnoremap H ^
-nnoremap Q q
-nnoremap q :close<CR>
 nnoremap g= mzgg=G`zzz
 xnoremap <  <gv
 xnoremap >  >gv
 nnoremap <Tab> :bnext<CR>
 nnoremap <S-Tab> :bprev<CR>
-nnoremap <C-q> :bd<CR>
-
-
-noremap <Up> <nop>
-noremap <Down> <nop>
-noremap <Left> <nop>
-noremap <Right> <nop>
-inoremap <Up> <nop>
-inoremap <Down> <nop>
-inoremap <Left> <nop>
-inoremap <Right> <nop>
-
-augroup dispatch_settings
-	autocmd!
-	autocmd FileType go let b:dispatch = 'goimports -w %'
-	autocmd FileType go compiler go
-	autocmd FileType nix let b:dispatch = 'nixfmt %'
-	autocmd FileType nix compiler nix-build
-	autocmd FileType py compiler flake8
-augroup end
+nnoremap c* *``cgn
+nnoremap c# #``cgN
 
 imap <C-k> <Plug>(neosnippet_expand_or_jump)
 smap <C-k> <Plug>(neosnippet_expand_or_jump)
@@ -137,11 +119,4 @@ endif
 
 let g:neosnippet#snippets_directory='~/.vim/snippets'
 
-set notermguicolors
-set t_Co=16
-set t_ut=
-
-highlight clear
-highlight LineNr NONE
-
-syntax off
+colorscheme default

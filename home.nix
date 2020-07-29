@@ -358,10 +358,14 @@ in {
 
   home.file = {
     "bin".source = ./bin;
+    ".vim/after/ftplugin".source = ./dotfiles/vim/ftplugin;
+    ".vim/autoload".source = ./dotfiles/vim/autoload;
+    ".vim/colors".source = ./dotfiles/vim/colors;
+    ".vim/compiler".source = ./dotfiles/vim/compiler;
+    ".vim/plugin".source = ./dotfiles/vim/plugin;
+    ".vim/snippets".source = ./dotfiles/vim/snippets;
     ".mailcap".source = ./dotfiles/mailcap;
     ".newsboat/urls".text = readFile ~/Dropbox/newsboat-urls;
-    ".vim/UltiSnips".source = ./dotfiles/snippets;
-    ".vim/compiler".source = ./dotfiles/compiler;
     ".local/share/applications/fff.desktop".text = ''
       [Desktop Entry]
       Name=FFF

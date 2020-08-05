@@ -14,5 +14,4 @@ config.set('content.javascript.enabled', True, 'file://*')
 config.set('content.javascript.enabled', True, 'chrome://*/*')
 config.set('content.javascript.enabled', True, 'qute://*/*')
 
-config.bind(',p', 'open -t https://getpocket.com/edit?url={url}')
 config.bind(',m', 'spawn mpv {url}')

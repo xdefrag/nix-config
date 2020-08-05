@@ -7,6 +7,7 @@ pkgs.mkShell {
     goimports
     golangci-lint
     gomodifytags
+    gotags
     gotests
     impl
     reftools

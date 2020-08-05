@@ -1,4 +1,4 @@
-{ lib, pkgs, cfg, ... }:
+{ lib, pkgs, config, ... }:
 
 with builtins;
 
@@ -9,11 +9,37 @@ in {
   accounts.email.maildirBasePath = ".mail";
 
   accounts.email.accounts = {
+    s = {
+      address = "s@humanramen.dev";
+      userName = "s@humanramen.dev";
+      realName = "Stanislav Karkavin";
+      primary = true;
+      passwordCommand = "${pkgs.pass}/bin/pass s@humanramen.dev";
+      msmtp = {
+        enable = true;
+        extraConfig = { tls_starttls = "on"; };
+      };
+      notmuch.enable = true;
+      neomutt.enable = true;
+      mbsync = {
+        enable = true;
+        create = "both";
+        expunge = "both";
+        remove = "both";
+      };
+      smtp = {
+        host = "mail.humanramen.dev";
+        port = 587;
+      };
+      imap = {
+        host = "mail.humanramen.dev";
+        port = 993;
+      };
+    };
     mycoldwinter = {
       address = "mycoldwinter@gmail.com";
       userName = "mycoldwinter@gmail.com";
       realName = "Stanislav Karkavin";
-      primary = true;
       flavor = "gmail.com";
       passwordCommand = "${pkgs.pass}/bin/pass mycoldwinter@gmail.com";
       msmtp.enable = true;
@@ -63,46 +89,76 @@ in {
   wayland.windowManager.sway = {
     enable = true;
     config = {
+      bindkeysToCode = true;
       bars = [{ command = "waybar"; }];
       fonts = [ "Iosevka 10" ];
-      menu = "${pkgs.wofi}/bin/wofi --show run";
+      menu =
+        "${pkgs.alacritty}/bin/alacritty --class launcher -d 70 10 -e ~/bin/swayrun";
       modifier = "Mod4";
       terminal = "${pkgs.alacritty}/bin/alacritty";
       window = {
         border = 0;
         titlebar = false;
+        commands = [
+          {
+            command = "sticky enable";
+            criteria = { title = ".*mpv$"; };
+          }
+          {
+            command = "resize set width 400px";
+            criteria = { title = ".*mpv$"; };
+          }
+          {
+            command = "move absolute position 1020px 300px";
+            criteria = { title = ".*mpv$"; };
+          }
+        ];
       };
       workspaceAutoBackAndForth = true;
       startup = [
         { command = "gebaard -b"; }
         { command = "mako"; }
         { command = "dropbox"; }
-        { command = "qutebrowser"; }
-        { command = "telegram-desktop"; }
       ];
-      assigns = {
-        "1:www" = [{ class = "qutebrowser"; }];
-        "2:mail" = [{ class = "TelegramDesktop"; }];
+      floating = {
+        border = 0;
+        criteria = [ { title = ".*mpv$"; } { app_id = "launcher"; } ];
       };
-      floating.criteria = [{
-        title = ".*mpv$";
-      }
-      # { instance = "Godot_Engine"; title = ""; }
-        ];
       input = {
         "*" = {
           xkb_layout = "us,ru";
           xkb_options = "grp:ctrl_shift_toggle,ctrl:swapcaps";
         };
       };
-      keybindings = lib.mkOptionDefault {
-        "XF86AudioRaiseVolume" =
-          "exec pactl set-sink-volume @DEFAULT_SINK@ +5%";
-        "XF86AudioLowerVolume" =
-          "exec pactl set-sink-volume @DEFAULT_SINK@ -5%";
-        "XF86AudioMute" = "exec pactl set-sink-mute @DEFAULT_SINK@ toggle";
-        "XF86MonBrightnessDown" = "exec brightnessctl set 5%-";
-        "XF86MonBrightnessUp" = "exec brightnessctl set +5%";
+      keybindings =
+        let modifier = config.wayland.windowManager.sway.config.modifier;
+        in lib.mkOptionDefault {
+          "${modifier}+v" = "exec ${pkgs.alacritty}/bin/alacritty -e vim";
+          "${modifier}+n" = "exec ${pkgs.alacritty}/bin/alacritty -e newsboat";
+          "${modifier}+m" = "exec ${pkgs.alacritty}/bin/alacritty -e neomutt";
+          "${modifier}+b" = "exec ${pkgs.qutebrowser}/bin/qutebrowser";
+          "${modifier}+p" = "exec ${pkgs.alacritty}/bin/alacritty -e spt";
+          "${modifier}+o" = "exec ${pkgs.alacritty}/bin/alacritty -e nnn";
+          "${modifier}+t" = "exec ${pkgs.alacritty}/bin/alacritty -e gotop";
+          "XF86AudioRaiseVolume" =
+            "exec pactl set-sink-volume @DEFAULT_SINK@ +5%";
+          "XF86AudioLowerVolume" =
+            "exec pactl set-sink-volume @DEFAULT_SINK@ -5%";
+          "XF86AudioMute" = "exec pactl set-sink-mute @DEFAULT_SINK@ toggle";
+          "XF86MonBrightnessDown" = "exec brightnessctl set 5%-";
+          "XF86MonBrightnessUp" = "exec brightnessctl set +5%";
+        };
+      gaps = {
+        left = 5;
+        right = 5;
+        outer = 5;
+        inner = 5;
+        top = 5;
+        bottom = 5;
+        horizontal = 5;
+        vertical = 5;
+        smartBorders = "on";
+        smartGaps = true;
       };
     };
     extraConfig = ''
@@ -122,14 +178,15 @@ in {
       git-open
       git-secrets
 
+      cht-sh
+      shellcheck
+      direnv
       bash-completion
-      cv
-      ddgr
-      wofi
       bitwig-studio
       blueman
       cantarell-fonts
       corefonts
+      cv
       dropbox
       font-awesome
       fswatch
@@ -151,11 +208,10 @@ in {
       pywal
       qutebrowser
       scrot
-      spotify
+      spotify-tui
       swaybg
       swaylock
       tdesktop
-      tldr
       universal-ctags
       urlview
       w3m
@@ -184,25 +240,37 @@ in {
             x = 0;
             y = 0;
           };
-          dynamic_padding = false;
+          dynamic_padding = true;
           decorations = "none";
         };
+        background_opacity = 0.8;
       };
     };
     bash = {
-      initExtra = readFile bash_sensible;
-      profileExtra = ''
+      initExtra = (readFile bash_sensible + ''
         export PS1="\w ⚔️  "
-      '';
+        export PAGER="w3m"
+
+        cat ~/.cache/wal/sequences
+
+        eval "$(direnv hook bash)"
+
+        if [[ $(tty) = /dev/tty1 ]]; then
+        exec sway
+        fi
+      '');
       enable = true;
       enableAutojump = true;
       sessionVariables = {
+        BROWSER = "qutebrowser";
         EDITOR = "vim";
         VISUAL = "$EDITOR";
         PATH = "$PATH:~/bin";
       };
       shellAliases = {
         v = "vim";
+        vv = "cd ~/Dropbox && vim ~/Dropbox/index.md";
+        vh = "cd ~/nix-config && vim ~/nix-config/home.nix";
         l = "ls -h --group-directories-first";
         la = "ls -h --group-directories-first --all";
         ".." = "cd ..";
@@ -220,6 +288,10 @@ in {
       extraConfig = { pull = { rebase = true; }; };
     };
     gpg = { enable = true; };
+    fzf = {
+      enable = true;
+      enableBashIntegration = true;
+    };
     mpv.enable = true;
     notmuch = {
       enable = true;
@@ -228,7 +300,7 @@ in {
       hooks = {
         preNew = "mbsync -a";
         postNew = ''
-          notmuch tag -inbox +sent -- from:me@xdefrag.dev or from:mycoldwinter@gmail.com
+          notmuch tag -inbox +sent -- from:me@xdefrag.dev or from:mycoldwinter@gmail.com or from:s@humanramen.dev
           notmuch tag +newsletters -inbox -- from:peter@golangweekly.com or from:peter@webopsweekly.com
           notmuch tag +notifications -inbox -- from:'*info*' or from:'*noreply*' or from:'*no-reply*' or from:'*postmaster*'
         '';
@@ -265,7 +337,7 @@ in {
       '';
     };
     mbsync = { enable = true; };
-    msmtp.enable = true;
+    msmtp = { enable = true; };
     newsboat = {
       enable = true;
       autoReload = true;
@@ -284,13 +356,21 @@ in {
       package = pkgs.redshift-wlr;
       latitude = "59";
       longitude = "30";
-      brightness = {
-        day = "1";
-        night = "0.7";
-      };
       temperature = {
         day = 5700;
         night = 3500;
+      };
+    };
+    spotifyd = {
+      enable = true;
+      settings = {
+        global = {
+          username = "me@xdefrag.dev";
+          password_cmd = "pass spotify-usa";
+          device_name = "absu-spotifyd";
+          bitrate = "320";
+          backend = "pulseaudio";
+        };
       };
     };
     gpg-agent = {
@@ -303,6 +383,7 @@ in {
       frequency = "*:0/5";
       postExec = "${pkgs.notmuch}/bin/notmuch new";
     };
+    lorri.enable = true;
   };
 
   xdg = {
@@ -358,12 +439,14 @@ in {
 
   home.file = {
     "bin".source = ./bin;
+    ".vim/vimrc".source = ./dotfiles/vim/vimrc;
     ".vim/after/ftplugin".source = ./dotfiles/vim/ftplugin;
     ".vim/autoload".source = ./dotfiles/vim/autoload;
     ".vim/colors".source = ./dotfiles/vim/colors;
     ".vim/compiler".source = ./dotfiles/vim/compiler;
     ".vim/plugin".source = ./dotfiles/vim/plugin;
-    ".vim/snippets".source = ./dotfiles/vim/snippets;
+    ".w3m/keymap".source = ./dotfiles/keymap.w3m;
+    ".w3m/config".source = ./dotfiles/config.w3m;
     ".mailcap".source = ./dotfiles/mailcap;
     ".newsboat/urls".text = readFile ~/Dropbox/newsboat-urls;
     ".local/share/applications/fff.desktop".text = ''

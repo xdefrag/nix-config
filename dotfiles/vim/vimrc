@@ -90,7 +90,6 @@ set grepprg=rg\ --vimgrep\ $*
 set grepformat=%f:%l:%c:%m
 
 command! -nargs=* Grep grep <args> | cwindow
-command! -nargs=* Edit edit **/<args>
 
 let mapleader = " "
 
@@ -108,15 +107,5 @@ nnoremap <Tab> :bnext<CR>
 nnoremap <S-Tab> :bprev<CR>
 nnoremap c* *``cgn
 nnoremap c# #``cgN
-
-imap <C-k> <Plug>(neosnippet_expand_or_jump)
-smap <C-k> <Plug>(neosnippet_expand_or_jump)
-xmap <C-k> <Plug>(neosnippet_expand_target)
-
-if has('conceal')
-	set conceallevel=2 concealcursor=niv
-endif
-
-let g:neosnippet#snippets_directory='~/.vim/snippets'
 
 colorscheme default

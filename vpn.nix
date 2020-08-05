@@ -6,7 +6,7 @@
     };
     expressvpn-usa = {
       autoStart = false;
-      config = '' config /root/.vpn/expressvpn-usa/exressvpn-usa.ovpn '';
+      config = '' config /root/.vpn/expressvpn-usa/expressvpn-usa.ovpn '';
     };
   };
 }

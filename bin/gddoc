@@ -1,0 +1,2 @@
+#!/bin/sh
+qutebrowser https://docs.godotengine.org/en/3.2/search.html?q=$1 &> /dev/null

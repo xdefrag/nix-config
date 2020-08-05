@@ -1,0 +1,2 @@
+#!/bin/sh
+swaymsg -t command exec "$(ls "$HOME/.nix-profile/bin/" | fzf --color=bw --reverse --prompt 'run > ' )"

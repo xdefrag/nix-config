@@ -1,0 +1,2 @@
+#!/bin/sh
+alacritty --class launcher -d 70 10 -e $1

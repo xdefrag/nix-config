@@ -3,7 +3,7 @@
 with builtins;
 
 let
-  bash_sensible = fetchurl
+  bash-sensible = fetchurl
     "https://raw.githubusercontent.com/mrzool/bash-sensible/master/sensible.bash";
 in {
   accounts.email.maildirBasePath = ".mail";
@@ -92,8 +92,7 @@ in {
       bindkeysToCode = true;
       bars = [{ command = "waybar"; }];
       fonts = [ "Iosevka 10" ];
-      menu =
-        "${pkgs.alacritty}/bin/alacritty --class launcher -d 70 10 -e ~/bin/swayrun";
+      menu = "~/bin/launcher ~/bin/swayrun";
       modifier = "Mod4";
       terminal = "${pkgs.alacritty}/bin/alacritty";
       window = {
@@ -133,6 +132,7 @@ in {
       keybindings =
         let modifier = config.wayland.windowManager.sway.config.modifier;
         in lib.mkOptionDefault {
+          "${modifier}+a" = "exec ~/bin/launcher ~/bin/swaypass";
           "${modifier}+v" = "exec ${pkgs.alacritty}/bin/alacritty -e vim";
           "${modifier}+n" = "exec ${pkgs.alacritty}/bin/alacritty -e newsboat";
           "${modifier}+m" = "exec ${pkgs.alacritty}/bin/alacritty -e neomutt";
@@ -178,6 +178,8 @@ in {
       git-open
       git-secrets
 
+      grim
+      wl-clipboard
       cht-sh
       shellcheck
       direnv
@@ -247,7 +249,7 @@ in {
       };
     };
     bash = {
-      initExtra = (readFile bash_sensible + ''
+      initExtra = (readFile bash-sensible + ''
         export PS1="\w ⚔️  "
         export PAGER="w3m"
 
@@ -282,8 +284,8 @@ in {
     };
     git = {
       enable = true;
-      # signing.key = "";
-      userEmail = "me@xdefrag.dev";
+      signing.key = "D0395157";
+      userEmail = "s@humanramen.dev";
       userName = "Stanislav Karkavin";
       extraConfig = { pull = { rebase = true; }; };
     };
@@ -420,7 +422,6 @@ in {
         "image/png" = [ "imv.desktop" ];
         "text/html" = [ "org.qutebrowser.qutebrowser.desktop" ];
         "text/plain" = [ "vim.desktop" ];
-        "inode/directory" = [ "fff.desktop" ];
         "x-scheme-handler/mailto" = [ "mutt.desktop" ];
       };
     };
@@ -449,16 +450,6 @@ in {
     ".w3m/config".source = ./dotfiles/config.w3m;
     ".mailcap".source = ./dotfiles/mailcap;
     ".newsboat/urls".text = readFile ~/Dropbox/newsboat-urls;
-    ".local/share/applications/fff.desktop".text = ''
-      [Desktop Entry]
-      Name=FFF
-      Comment=File browser
-      Exec=fff
-      Terminal=true
-      Type=Application
-      Icon=terminal
-      MimeType=inode/directory;
-    '';
     ".local/share/applications/vim.desktop".text = ''
       [Desktop Entry]
       Name=Vim Text Editor

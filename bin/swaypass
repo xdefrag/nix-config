@@ -1,0 +1,6 @@
+#!/bin/sh
+passwordStore="$HOME/.password-store"
+
+password=$(ls "$passwordStore" | rev | cut -d. -f2- | rev | fzf  --color=bw --reverse --prompt 'pass > ')
+
+wl-copy "$(pass "$password" | sed q1)"

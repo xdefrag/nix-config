@@ -52,29 +52,6 @@ in {
         remove = "both";
       };
     };
-    dev = {
-      address = "me@xdefrag.dev";
-      userName = "me@xdefrag.dev";
-      realName = "Stanislav Karkavin";
-      passwordCommand = "${pkgs.pass}/bin/pass me@xdefrag.dev";
-      msmtp.enable = true;
-      notmuch.enable = true;
-      neomutt.enable = true;
-      mbsync = {
-        enable = true;
-        create = "both";
-        expunge = "both";
-        remove = "both";
-      };
-      smtp = {
-        host = "smtp.fastmail.com";
-        port = 465;
-      };
-      imap = {
-        host = "imap.fastmail.com";
-        port = 993;
-      };
-    };
   };
 
   home.sessionVariables = { EDITOR = "vim"; };
@@ -114,11 +91,7 @@ in {
         ];
       };
       workspaceAutoBackAndForth = true;
-      startup = [
-        { command = "gebaard -b"; }
-        { command = "mako"; }
-        { command = "dropbox"; }
-      ];
+      startup = [ { command = "gebaard -b"; } { command = "mako"; } ];
       floating = {
         border = 0;
         criteria = [ { title = ".*mpv$"; } { app_id = "launcher"; } ];
@@ -133,13 +106,16 @@ in {
         let modifier = config.wayland.windowManager.sway.config.modifier;
         in lib.mkOptionDefault {
           "${modifier}+a" = "exec ~/bin/launcher ~/bin/swaypass";
-          "${modifier}+v" = "exec ${pkgs.alacritty}/bin/alacritty -e vim";
+          "${modifier}+v" =
+            "exec ${pkgs.alacritty}/bin/alacritty -e vim ~/docs/index.md";
           "${modifier}+n" = "exec ${pkgs.alacritty}/bin/alacritty -e newsboat";
           "${modifier}+m" = "exec ${pkgs.alacritty}/bin/alacritty -e neomutt";
           "${modifier}+b" = "exec ${pkgs.qutebrowser}/bin/qutebrowser";
           "${modifier}+p" = "exec ${pkgs.alacritty}/bin/alacritty -e spt";
           "${modifier}+o" = "exec ${pkgs.alacritty}/bin/alacritty -e nnn";
           "${modifier}+t" = "exec ${pkgs.alacritty}/bin/alacritty -e gotop";
+          "${modifier}+i" =
+            "exec ${pkgs.alacritty}/bin/alacritty -e sic -h irc.freenode.org -n xdefrag -k $(pass irc.freenode.org)";
           "XF86AudioRaiseVolume" =
             "exec pactl set-sink-volume @DEFAULT_SINK@ +5%";
           "XF86AudioLowerVolume" =
@@ -169,59 +145,52 @@ in {
     '';
   };
 
-  home.packages = with pkgs;
-    with pkgs.gitAndTools; [
-      bfg-repo-cleaner
-      git-absorb
-      git-extras
-      git-fame
-      git-open
-      git-secrets
-
-      grim
-      wl-clipboard
-      cht-sh
-      shellcheck
-      direnv
-      bash-completion
-      bitwig-studio
-      blueman
-      cantarell-fonts
-      corefonts
-      cv
-      dropbox
-      font-awesome
-      fswatch
-      gebaar-libinput
-      gnumake
-      imv
-      iosevka
-      jq
-      libnotify
-      mako
-      neofetch
-      nixfmt
-      nnn
-      noto-fonts
-      noto-fonts-cjk
-      noto-fonts-emoji
-      noto-fonts-extra
-      pandoc
-      pywal
-      qutebrowser
-      scrot
-      spotify-tui
-      swaybg
-      swaylock
-      tdesktop
-      universal-ctags
-      urlview
-      w3m
-      waybar
-      xdg_utils
-      youtube-dl
-      zathura
-    ];
+  home.packages = with pkgs; [
+    hugo
+    sic
+    grim
+    wl-clipboard
+    cht-sh
+    shellcheck
+    direnv
+    bash-completion
+    bitwig-studio
+    blueman
+    cantarell-fonts
+    corefonts
+    cv
+    font-awesome
+    fswatch
+    gebaar-libinput
+    gnumake
+    imv
+    iosevka
+    jq
+    libnotify
+    mako
+    neofetch
+    nixfmt
+    nnn
+    noto-fonts
+    noto-fonts-cjk
+    noto-fonts-emoji
+    noto-fonts-extra
+    pandoc
+    pywal
+    qutebrowser
+    scrot
+    spotify-tui
+    swaybg
+    swaylock
+    tdesktop
+    universal-ctags
+    urlview
+    w3m
+    waybar
+    xdg_utils
+    youtube-dl
+    zathura
+  ];
 
   news.display = "silent";
 
@@ -250,7 +219,7 @@ in {
     };
     bash = {
       initExtra = (readFile bash-sensible + ''
-        export PS1="\w ⚔️  "
+        export PS1="\w \[\033[38;5;4m\]⚔️ \[$(tput sgr0)\] "
         export PAGER="w3m"
 
         cat ~/.cache/wal/sequences
@@ -271,7 +240,7 @@ in {
       };
       shellAliases = {
         v = "vim";
-        vv = "cd ~/Dropbox && vim ~/Dropbox/index.md";
+        vv = "cd ~/docs && vim ~/docs/index.md";
         vh = "cd ~/nix-config && vim ~/nix-config/home.nix";
         l = "ls -h --group-directories-first";
         la = "ls -h --group-directories-first --all";
@@ -375,6 +344,7 @@ in {
         };
       };
     };
+    syncthing.enable = true;
     gpg-agent = {
       enable = true;
       defaultCacheTtl = 34560000;
@@ -449,7 +419,7 @@ in {
     ".w3m/keymap".source = ./dotfiles/keymap.w3m;
     ".w3m/config".source = ./dotfiles/config.w3m;
     ".mailcap".source = ./dotfiles/mailcap;
-    ".newsboat/urls".text = readFile ~/Dropbox/newsboat-urls;
+    ".newsboat/urls".text = readFile ~/docs/newsboat-urls;
     ".local/share/applications/vim.desktop".text = ''
       [Desktop Entry]
       Name=Vim Text Editor

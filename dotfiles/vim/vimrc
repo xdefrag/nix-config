@@ -89,8 +89,6 @@ set tags=./tags,tags
 set grepprg=rg\ --vimgrep\ $*
 set grepformat=%f:%l:%c:%m
 
-command! -nargs=* Grep grep <args> | cwindow
-
 let mapleader = " "
 
 inoremap jk <Esc>
@@ -103,9 +101,19 @@ nnoremap H ^
 nnoremap g= mzgg=G`zzz
 xnoremap <  <gv
 xnoremap >  >gv
-nnoremap <Tab> :bnext<CR>
-nnoremap <S-Tab> :bprev<CR>
+nnoremap gt :bnext<CR>
+nnoremap gT :bprev<CR>
 nnoremap c* *``cgn
 nnoremap c# #``cgN
+
+"" Copy-paste from https://www.vi-improved.org/recommendations/
+nnoremap <leader>E :argadd <c-r>=fnameescape(expand('%:p:h'))<cr>/*<C-d>
+nnoremap <leader>b :b <C-d>
+nnoremap <leader>e :e **/
+nnoremap <leader>g :grep<space>
+nnoremap <leader>i :Ilist<space>
+nnoremap <leader>j :tjump /
+nnoremap <leader>m :make<cr>
+nnoremap <leader>q :b#<cr>
 
 colorscheme default

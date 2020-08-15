@@ -5,6 +5,8 @@ with builtins;
 let
   bash-sensible = fetchurl
     "https://raw.githubusercontent.com/mrzool/bash-sensible/master/sensible.bash";
+  dollchan = fetchurl
+    "https://raw.githubusercontent.com/SthephanShinkufag/Dollchan-Extension-Tools/master/src/Dollchan_Extension_Tools.es6.user.js";
 in {
   accounts.email.maildirBasePath = ".mail";
 
@@ -34,22 +36,6 @@ in {
       imap = {
         host = "mail.humanramen.dev";
         port = 993;
-      };
-    };
-    mycoldwinter = {
-      address = "mycoldwinter@gmail.com";
-      userName = "mycoldwinter@gmail.com";
-      realName = "Stanislav Karkavin";
-      flavor = "gmail.com";
-      passwordCommand = "${pkgs.pass}/bin/pass mycoldwinter@gmail.com";
-      msmtp.enable = true;
-      notmuch.enable = true;
-      neomutt.enable = true;
-      mbsync = {
-        enable = true;
-        create = "both";
-        expunge = "both";
-        remove = "both";
       };
     };
   };
@@ -114,8 +100,7 @@ in {
           "${modifier}+p" = "exec ${pkgs.alacritty}/bin/alacritty -e spt";
           "${modifier}+o" = "exec ${pkgs.alacritty}/bin/alacritty -e nnn";
           "${modifier}+t" = "exec ${pkgs.alacritty}/bin/alacritty -e gotop";
-          "${modifier}+i" =
-            "exec ${pkgs.alacritty}/bin/alacritty -e sic -h irc.freenode.org -n xdefrag -k $(pass irc.freenode.org)";
+          "${modifier}+i" = "exec ${pkgs.alacritty}/bin/alacritty -e weechat";
           "XF86AudioRaiseVolume" =
             "exec pactl set-sink-volume @DEFAULT_SINK@ +5%";
           "XF86AudioLowerVolume" =
@@ -146,8 +131,17 @@ in {
   };
 
   home.packages = with pkgs; [
+    gitAndTools.git-extras
+
+    weechat
+    weechatScripts.wee-slack
+    weechatScripts.weechat-matrix-bridge
+    weechatScripts.weechat-autosort
+    weechatScripts.weechat-otr
+
+    nethack
+    go-pup
     hugo
-    sic
     grim
     wl-clipboard
     cht-sh
@@ -227,7 +221,7 @@ in {
         eval "$(direnv hook bash)"
 
         if [[ $(tty) = /dev/tty1 ]]; then
-        exec sway
+          exec sway
         fi
       '');
       enable = true;
@@ -328,8 +322,8 @@ in {
       latitude = "59";
       longitude = "30";
       temperature = {
-        day = 5700;
-        night = 3500;
+        day = 4700;
+        night = 1800;
       };
     };
     spotifyd = {
@@ -420,6 +414,8 @@ in {
     ".w3m/config".source = ./dotfiles/config.w3m;
     ".mailcap".source = ./dotfiles/mailcap;
     ".newsboat/urls".text = readFile ~/docs/newsboat-urls;
+    ".local/share/qutebrowser/greasemonkey/Dollchan_Extension_Tools.es6.user.js".text =
+      readFile dollchan;
     ".local/share/applications/vim.desktop".text = ''
       [Desktop Entry]
       Name=Vim Text Editor

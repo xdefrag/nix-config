@@ -23,12 +23,14 @@
 
   environment.systemPackages = with pkgs; [
     brightnessctl
+    cifs-utils
     curl
     fd
     git
     gnupg
     gotop
     ncdu
+    nfs-utils
     openssl
     p7zip
     parted

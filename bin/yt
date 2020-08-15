@@ -1,0 +1,7 @@
+#!/bin/sh
+if [ $# -eq 0 ]; then
+	echo "Usage: yt <search-query>"
+	exit
+fi
+
+mpv "$(youtube-dl -g "ytsearch:$*")"

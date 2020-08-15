@@ -8,4 +8,3 @@ setlocal noexpandtab
 setlocal textwidth=0
 
 setlocal keywordprg=gddoc
-setlocal path=**/*.gd

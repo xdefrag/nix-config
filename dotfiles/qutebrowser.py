@@ -39,7 +39,9 @@ c.search.ignore_case = 'smart'
 c.content.user_stylesheets = []
 
 c.url.searchengines = {
-    "DEFAULT": "https://html.duckduckgo.com/html?q={}"
+    "DEFAULT": "https://html.duckduckgo.com/html?q={}",
+    "wa": "https://wiki.archlinux.org/index.php?search={}",
+    "rym": "https://rateyourmusic.com/search?searchterm={}"
 }
 c.url.default_page = 'https://xdefrag.dev'
 c.url.start_pages = ['https://xdefrag.dev']
@@ -60,9 +62,6 @@ c.content.ssl_strict = True
 c.content.mute = True
 c.content.plugins = False
 c.content.javascript.enabled = True
-
-# with config.pattern('*://github.com/') as p:
-#     p.content.javascript.enabled = True
 
 config.bind('<Ctrl-R>', 'config-cycle content.user_stylesheets ""')
 

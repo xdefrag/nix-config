@@ -1,7 +1,6 @@
 augroup go
 	autocmd!
-	autocmd BufWrite *_test.go Dispatch! go test ./...
-	autocmd BufWrite *.go Dispatch!
+	autocmd BufWrite *.go Dispatch goimports -w %
 augroup END
 
 augroup vim

@@ -1,2 +1,2 @@
 #!/bin/sh
-w3m https://duckduckgo.com/?q=$1
+w3m https://duckduckgo.com/?q="$1"

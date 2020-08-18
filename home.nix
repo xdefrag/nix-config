@@ -47,170 +47,10 @@ in {
     options = [ "grp:ctrl_shift_toggle" "ctrl:swapcaps" ];
   };
 
-  fonts.fontconfig.enable = true;
-
-  wayland.windowManager.sway = {
-    enable = true;
-    config = {
-      bindkeysToCode = true;
-      bars = [{ command = "waybar"; }];
-      fonts = [ "Iosevka 10" ];
-      menu = "~/bin/launcher ~/bin/swayrun";
-      modifier = "Mod4";
-      terminal = "${pkgs.alacritty}/bin/alacritty";
-      window = {
-        border = 0;
-        titlebar = false;
-        commands = [
-          {
-            command = "sticky enable";
-            criteria = { title = ".*mpv$"; };
-          }
-          {
-            command = "resize set width 400px";
-            criteria = { title = ".*mpv$"; };
-          }
-          {
-            command = "move absolute position 1020px 300px";
-            criteria = { title = ".*mpv$"; };
-          }
-        ];
-      };
-      workspaceAutoBackAndForth = true;
-      startup = [ { command = "gebaard -b"; } { command = "mako"; } ];
-      floating = {
-        border = 0;
-        criteria = [ { title = ".*mpv$"; } { app_id = "launcher"; } ];
-      };
-      input = {
-        "*" = {
-          xkb_layout = "us,ru";
-          xkb_options = "grp:ctrl_shift_toggle,ctrl:swapcaps";
-        };
-      };
-      keybindings =
-        let modifier = config.wayland.windowManager.sway.config.modifier;
-        in lib.mkOptionDefault {
-          "${modifier}+a" = "exec ~/bin/launcher ~/bin/swaypass";
-          "${modifier}+v" =
-            "exec ${pkgs.alacritty}/bin/alacritty -e vim ~/docs/index.md";
-          "${modifier}+n" = "exec ${pkgs.alacritty}/bin/alacritty -e newsboat";
-          "${modifier}+m" = "exec ${pkgs.alacritty}/bin/alacritty -e neomutt";
-          "${modifier}+b" = "exec ${pkgs.qutebrowser}/bin/qutebrowser";
-          "${modifier}+p" = "exec ${pkgs.alacritty}/bin/alacritty -e spt";
-          "${modifier}+o" = "exec ${pkgs.alacritty}/bin/alacritty -e nnn";
-          "${modifier}+t" = "exec ${pkgs.alacritty}/bin/alacritty -e gotop";
-          "${modifier}+i" = "exec ${pkgs.alacritty}/bin/alacritty -e weechat";
-          "XF86AudioRaiseVolume" =
-            "exec pactl set-sink-volume @DEFAULT_SINK@ +5%";
-          "XF86AudioLowerVolume" =
-            "exec pactl set-sink-volume @DEFAULT_SINK@ -5%";
-          "XF86AudioMute" = "exec pactl set-sink-mute @DEFAULT_SINK@ toggle";
-          "XF86MonBrightnessDown" = "exec brightnessctl set 5%-";
-          "XF86MonBrightnessUp" = "exec brightnessctl set +5%";
-        };
-      gaps = {
-        left = 5;
-        right = 5;
-        outer = 5;
-        inner = 5;
-        top = 5;
-        bottom = 5;
-        horizontal = 5;
-        vertical = 5;
-        smartBorders = "on";
-        smartGaps = true;
-      };
-    };
-    extraConfig = ''
-      include "$HOME/.cache/wal/colors-sway"
-
-      output * background $wallpaper fill
-      client.focused $color0 $background $foreground $color7 $background
-    '';
-  };
-
-  home.packages = with pkgs; [
-    gitAndTools.git-extras
-
-    weechat
-    weechatScripts.wee-slack
-    weechatScripts.weechat-matrix-bridge
-    weechatScripts.weechat-autosort
-    weechatScripts.weechat-otr
-
-    nethack
-    go-pup
-    hugo
-    grim
-    wl-clipboard
-    cht-sh
-    shellcheck
-    direnv
-    bash-completion
-    bitwig-studio
-    blueman
-    cantarell-fonts
-    corefonts
-    cv
-    font-awesome
-    fswatch
-    gebaar-libinput
-    gnumake
-    imv
-    iosevka
-    jq
-    libnotify
-    mako
-    neofetch
-    nixfmt
-    nnn
-    noto-fonts
-    noto-fonts-cjk
-    noto-fonts-emoji
-    noto-fonts-extra
-    pandoc
-    pywal
-    qutebrowser
-    scrot
-    spotify-tui
-    swaybg
-    swaylock
-    tdesktop
-    universal-ctags
-    urlview
-    w3m
-    waybar
-    xdg_utils
-    youtube-dl
-    zathura
-  ];
-
   news.display = "silent";
-
-  nixpkgs.config.allowUnfree = true;
 
   programs = {
     home-manager.enable = true;
-    alacritty = {
-      enable = true;
-      settings = {
-        env.TERM = "alacritty";
-        font = {
-          normal = { family = "Iosevka"; };
-          size = 12.0;
-        };
-        window = {
-          padding = {
-            x = 0;
-            y = 0;
-          };
-          dynamic_padding = true;
-          decorations = "none";
-        };
-        background_opacity = 0.8;
-      };
-    };
     bash = {
       initExtra = (readFile bash-sensible + ''
         export PS1="\w \[\033[38;5;4m\]⚔️ \[$(tput sgr0)\] "
@@ -219,10 +59,6 @@ in {
         cat ~/.cache/wal/sequences
 
         eval "$(direnv hook bash)"
-
-        if [[ $(tty) = /dev/tty1 ]]; then
-          exec sway
-        fi
       '');
       enable = true;
       enableAutojump = true;
@@ -252,12 +88,10 @@ in {
       userName = "Stanislav Karkavin";
       extraConfig = { pull = { rebase = true; }; };
     };
-    gpg = { enable = true; };
     fzf = {
       enable = true;
       enableBashIntegration = true;
     };
-    mpv.enable = true;
     notmuch = {
       enable = true;
       search.excludeTags = [ "deleted" "spam" "trash" "archive" ];
@@ -318,24 +152,12 @@ in {
   services = {
     redshift = {
       enable = true;
-      package = pkgs.redshift-wlr;
+      package = pkgs.redshift;
       latitude = "59";
       longitude = "30";
       temperature = {
         day = 4700;
         night = 1800;
-      };
-    };
-    spotifyd = {
-      enable = true;
-      settings = {
-        global = {
-          username = "me@xdefrag.dev";
-          password_cmd = "pass spotify-usa";
-          device_name = "absu-spotifyd";
-          bitrate = "320";
-          backend = "pulseaudio";
-        };
       };
     };
     syncthing.enable = true;
@@ -356,18 +178,8 @@ in {
     enable = true;
     configFile = {
       "rtorrent/rtorrent.rc".source = ./dotfiles/rtorrent.rc;
-      "waybar/config".source = ./dotfiles/waybar;
-      "waybar/style.css".source = ./dotfiles/style.css;
-      "mako/config".source = ./dotfiles/mako;
       "qutebrowser/config.py".source = ./dotfiles/qutebrowser.py;
       "qutebrowser/qutewal.py".source = ./dotfiles/qutewal.py;
-      "gebaar/gebaard.toml".text = ''
-        [commands.swipe.three]
-        up = "sway fullscreen toggle"
-        down = "sway layout toggle"
-        left = "sway workspace next"
-        right = "sway workspace prev"
-      '';
       "git/ignore".text = ''
         dist/
 
@@ -416,26 +228,11 @@ in {
     ".newsboat/urls".text = readFile ~/docs/newsboat-urls;
     ".local/share/qutebrowser/greasemonkey/Dollchan_Extension_Tools.es6.user.js".text =
       readFile dollchan;
-    ".local/share/applications/vim.desktop".text = ''
-      [Desktop Entry]
-      Name=Vim Text Editor
-      Comment=Edit text files
-      Exec=vim 
-      Terminal=true
-      Type=Application
-      Icon=terminal
-      StartupNotify=true
-      MimeType=text/plain;
-    '';
-    ".local/share/applications/mutt.desktop".text = ''
-      [Desktop Entry]
-      Name=Mail
-      Exec=neomutt
-      Terminal=true
-      Type=Application
-      Icon=terminal
-      StartupNotify=true
-      MimeType=x-scheme-handler/mailto;
-    '';
+      ".xinitrc".text = ''
+        slstatus &
+        redshift &
+
+        exec dwm
+      '';
   };
 }

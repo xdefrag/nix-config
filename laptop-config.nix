@@ -9,6 +9,7 @@
     ./desktop.nix
     ./vpn.nix
     ./vim.nix
+    ./state.nix
   ];
 
   nix.trustedUsers = [ "root" "xdefrag" ];

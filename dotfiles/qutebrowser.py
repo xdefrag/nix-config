@@ -24,8 +24,6 @@ c.downloads.remove_finished = 100
 
 c.messages.timeout = 2000
 
-c.statusbar.hide = False
-
 c.tabs.background = True
 c.tabs.favicons.show = 'never'
 c.tabs.last_close = 'default-page'

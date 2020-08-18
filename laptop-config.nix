@@ -3,14 +3,8 @@
 {
   nixpkgs.config.allowUnfree = true; # broadcom wifi driver.
 
-  # Nixos-hardware channel:
-  #   $ sudo nix-channel --add https://github.com/NixOS/nixos-hardware/archive/master.tar.gz nixos-hardware
-  #   $ sudo nix-channel --update
-  # More info: https://github.com/NixOS/nixos-hardware
-
   imports = [
     ./hardware-configuration.nix
-    <nixos-hardware/apple/macbook-air/6>
     ./minimum.nix
     ./desktop.nix
     ./vpn.nix
@@ -47,5 +41,5 @@
 
   services.logind = { lidSwitch = "hibernate"; };
 
-  environment.systemPackages = with pkgs; [ lm_sensors ];
+  environment.systemPackages = with pkgs; [ lm_sensors linuxPackages.broadcom_sta ];
 }

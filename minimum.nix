@@ -79,8 +79,6 @@
 
   security.sudo.wheelNeedsPassword = false;
 
-  services.nixosManual.showManual = false;
-
   nix.gc = {
     automatic = true;
     dates = "daily";

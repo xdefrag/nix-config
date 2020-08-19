@@ -150,16 +150,6 @@ in {
   qt.enable = false;
 
   services = {
-    redshift = {
-      enable = true;
-      package = pkgs.redshift;
-      latitude = "59";
-      longitude = "30";
-      temperature = {
-        day = 4700;
-        night = 1800;
-      };
-    };
     syncthing.enable = true;
     gpg-agent = {
       enable = true;
@@ -229,10 +219,10 @@ in {
     ".local/share/qutebrowser/greasemonkey/Dollchan_Extension_Tools.es6.user.js".text =
       readFile dollchan;
       ".xinitrc".text = ''
-        slstatus &
-        redshift &
+      pywal -R &
+      slstatus &
 
-        exec dwm
-      '';
+      exec dwm
+    '';
   };
 }

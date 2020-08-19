@@ -32,8 +32,8 @@
 
   services.mbpfan = {
     enable = true;
-    lowTemp = 55;
-    highTemp = 60;
+    lowTemp = 65;
+    highTemp = 75;
     maxTemp = 80;
     maxFanSpeed = 6500;
     minFanSpeed = 1200;
